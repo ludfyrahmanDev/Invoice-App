@@ -1,0 +1,2 @@
+[30-Dec-2022 09:37:40 Asia/Jakarta] PHP Warning:  require(/home/itaw9275/public_html/POS_ITA_SOLUSI/vendor/autoload.php): failed to open stream: No such file or directory in /home/itaw9275/public_html/POS_ITA_SOLUSI/artisan on line 18
+[30-Dec-2022 09:37:40 Asia/Jakarta] PHP Fatal error:  require(): Failed opening required '/home/itaw9275/public_html/POS_ITA_SOLUSI/vendor/autoload.php' (include_path='.:/opt/cpanel/ea-php74/root/usr/share/pear') in /home/itaw9275/public_html/POS_ITA_SOLUSI/artisan on line 18
