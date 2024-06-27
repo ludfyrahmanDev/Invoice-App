@@ -17,6 +17,7 @@ class CreatePurchaseDetailTable extends Migration
             $table->id();
             $table->unsignedBigInteger('purchase_id');
             $table->unsignedBigInteger('subcategory_id');
+            $table->unsignedBigInteger('qty');
             $table->decimal('price', 10, 2);
             $table->unsignedBigInteger('subtotal');
             $table->timestamps();

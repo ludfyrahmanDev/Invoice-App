@@ -5,9 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BackOffice\DashboardController;
 use App\Http\Controllers\BackOffice\UserController;
 use App\Http\Controllers\BackOffice\CategoryController;
-use App\Http\Controllers\BackOffice\FormController;
+use App\Http\Controllers\BackOffice\PurchaseController;
 use App\Http\Controllers\BackOffice\SubCategoryController;
-use App\Http\Controllers\BackOffice\ImportController;
+use App\Http\Controllers\BackOffice\SupplierController;
 use App\Http\Controllers\SiteController;
 use App\Models\Voucher;
 
@@ -30,6 +30,8 @@ Route::middleware(['auth',  'verified'])->group(function () {
     Route::post('/profil', [UserController::class, 'updateProfile']);
     Route::resource('user', UserController::class);
     Route::resource('category', CategoryController::class);
+    Route::resource('supplier', SupplierController::class);
+    Route::resource('purchase', PurchaseController::class);
     Route::resource('sub_category', SubCategoryController::class);
 
 });

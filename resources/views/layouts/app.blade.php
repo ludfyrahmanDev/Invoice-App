@@ -174,9 +174,6 @@
 <script src="{{ asset('assets/js/table-data.js') }}"></script>
 
 
-<!-- P-scroll js -->
-<script src="{{ asset('assets/plugins/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
-<script src="{{ asset('assets/plugins/perfect-scrollbar/p-scroll.js') }}"></script>
 <!--Internal  Datepicker js -->
 <script src="{{ asset('assets/plugins/jquery-ui/ui/widgets/datepicker.js') }}"></script>
 <!--Internal  jquery-simple-date time picker js -->

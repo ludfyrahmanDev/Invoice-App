@@ -27,7 +27,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="">Kategori <span class="tx-danger">*</span></label>
-                                    <select name="category_id" class="form-control @error('category_id') parsley-error @enderror" id="">
+                                    <select name="category_id" class="form-control select2 @error('category_id') parsley-error @enderror" id="">
                                         <option value="">Pilih Kategori</option>
                                         @foreach ($categories as $category)
                                             <option {{$category->id == $data->category_id ? 'selected' : ''}} value="{{ $category->id }}">{{ $category->name }}</option>
