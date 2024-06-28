@@ -246,10 +246,15 @@ class PurchaseController extends Controller
     public function edit($id)
     {
         //
-        $data = SubCategory::where('id', $id)->first();
+        $data = Purchase::with('purchase_detail','purchase_detail.subcategory')->where('id', $id)->first();
+        $invoice = explode('-', $data->invoice_number);
+        $data->invoice_number = $invoice[0];
+        $data->invoice_code = $invoice[1];
+        $suppliers = Supplier::all();
+        $categories = SubCategory::with('category')->get();
         $title = 'Edit Data Pembelian';
-        $categories = Category::all();
-        return view('pages.backoffice.purchase.form', compact('data', 'title', 'categories'));
+        $data->type = 'edit';
+        return view('pages.backoffice.purchase.form', compact('data', 'title','suppliers', 'categories'));
     }
 
     /**
@@ -263,21 +268,57 @@ class PurchaseController extends Controller
     {
         //
         $request->validate([
-            'name' => 'required',
+            'supplier_id' => 'required',
+            'invoice_number' => 'required',
+            'invoice_code' => 'required',
+            'invoice_date' => 'required|date',
+            'initial_weight' => 'required',
+            'final_weight' => 'required',
+            'reject_weight' => 'required',
+            'subtotal' => 'required',
             'description' => 'required',
-            'category_id' => 'required',
         ]);
         try {
+            DB::beginTransaction();
+            $total = array_sum($request->subtotal);
+            $invoice_number = $request->invoice_number.'-'.$request->invoice_code;
+            // validate invoice number
+            $check = Purchase::where('invoice_number', $invoice_number)->count();
+            if ($check > 1) {
+                return back()->with('failed', 'Nomor invoice sudah ada!');
+            }
             $data = ([
-                'name' => $request->name,
-                'description' => $request->description,
-                'category_id' => $request->category_id,
+                'supplier_id' => $request->supplier_id,
+                'invoice_number' => $invoice_number,
+                // invoice date set date format
+                'invoice_date' => date('Y-m-d', strtotime($request->invoice_date)),
+                'initial_weight' => $request->initial_weight,
+                'reject_weight' => $request->reject_weight,
+                'final_weight' => $request->final_weight,
+                'subtotal' => array_sum($request->subtotal),
+                'tax' => $request->tax ?? 0,
+                'total' => $total,
+                'description' => $request->description ?? '-',
+                'status' => 'paid',
+                'user_id' => auth()->user()->id,
             ]);
-
-            SubCategory::where('id', $id)->update($data);
-            return redirect('sub_category')->with('success', 'Berhasil mengubah data!');
+            $purchase = Purchase::find($id)->update($data);
+            $purchase_id = $id;
+            Purchase::find($id)->purchase_detail()->delete();
+            foreach ($request->subcategory_id as $key => $value) {
+                $data_detail = ([
+                    'purchase_id' => $purchase_id,
+                    'subcategory_id' => $value,
+                    'qty' => $request->qty[$key],
+                    'price' => $request->price[$key],
+                    'subtotal' => $request->subtotal[$key],
+                ]);
+                PurchaseDetail::create($data_detail);
+            }
+            DB::commit();
+            return redirect('purchase')->with('success', 'Berhasil mengubah data!');
         } catch (\Throwable $th) {
-            return back()->with('failed', 'Gagal mengubah data!');
+            return back()->with('failed', 'Gagal mengubah data!'.$th->getMessage());
         }
     }
 

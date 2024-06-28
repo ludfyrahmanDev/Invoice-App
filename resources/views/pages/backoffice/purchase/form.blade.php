@@ -217,7 +217,17 @@
                                     </tr>
                                    </thead>
                                     <tbody>
-
+                                        @if($data->type != 'create')
+                                            @foreach ($data->purchase_detail as $item)
+                                                <tr>
+                                                    <td>{{$item->subcategory->name}} <input type="hidden" name="subcategory_id[]" value="{{$item->subcategory_id}}" /></td>
+                                                    <td>{{$item->qty}} <input type="hidden" name="qty[]" value="{{$item->qty}}" /></td>
+                                                    <td>{{Helper::price($item->price)}} <input type="hidden" name="price[]" value="{{$item->price}}" /></td>
+                                                    <td>{{Helper::price($item->subtotal)}} <input type="hidden" name="subtotal[]" value="{{$item->subtotal}}" /></td>
+                                                    <td><button type="button" class="btn btn-danger remove-item">Hapus</button></td>
+                                                </tr>
+                                            @endforeach
+                                        @endif
                                     </tbody>
                                 </table>
                             </div>
