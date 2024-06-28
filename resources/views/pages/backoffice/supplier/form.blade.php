@@ -41,7 +41,7 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="">Alias <span class="tx-danger">*</span></label>
+                                    <label for="">Alias </label>
                                     <input type="text" {{$data->type == 'detail' ? 'disabled' :''}} id="alias" name="alias"
                                         class="form-control @error('alias') parsley-error @enderror" placeholder="alias"
                                         value="{{ $data->alias == '' ? old('alias') : $data->alias }}">
@@ -94,7 +94,7 @@
 
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label for="">Alamat </label>
+                                    <label for="">Alamat <span class="tx-danger">*</span></label>
                                     <textarea rows="5" {{$data->type == 'detail' ? 'disabled' :''}} type="text" name="address"
                                         class="form-control @error('address') parsley-error @enderror" placeholder="address"
                                         >{{ $data->address == '' ? old('address') : $data->address }}</textarea>

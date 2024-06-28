@@ -44,9 +44,12 @@
                                     <td>{{ $item->initial_weight }} KG</td>
                                     <td>{{ $item->reject_weight }} KG</td>
                                     <td>{{ $item->final_weight }} KG</td>
-                                    <td class="d-flex"><a href="{{ route('purchase.edit', $item->id)}}" class="btn btn-sm btn-info me-2"> <i class="mdi mdi-pencil"></i>
+                                    <td class="d-flex">
+                                        <a href="{{ route('purchase.edit', $item->id)}}" class="btn btn-sm btn-info me-2"> <i class="mdi mdi-pencil"></i>
                                             Ubah</a>
-                                        <form method="POST" action="{{route('purchase.destroy', $item->id)}}">
+                                        <a href="{{ route('purchase.show', $item->id)}}" class="btn btn-sm btn-primary me-2"> <i class="mdi mdi-book"></i>
+                                            Detail</a>
+                                        <form method="POST" class="d-none" action="{{route('purchase.destroy', $item->id)}}">
                                             @method('delete')
                                             @csrf
                                             <button type="submit" onclick="return confirm('apakah anda yakin ingin menghapus data ??')" class="btn btn-sm btn-danger"><i class="mdi mdi-delete"></i>

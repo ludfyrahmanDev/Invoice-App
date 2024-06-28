@@ -5,7 +5,7 @@
         <!-- breadcrumb -->
 
         <!-- row -->
-        <div class="row row-sm">
+        <div class="row row-sm d-none">
             <div class="col-xl-4 col-lg-6 col-md-6 col-xm-12">
                 <div class="card overflow-hidden sales-card bg-primary-gradient">
                     <div class="ps-3 pt-3 pe-3 pb-2 pt-0">

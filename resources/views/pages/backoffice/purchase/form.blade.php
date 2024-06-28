@@ -284,6 +284,8 @@
                     return;
                 }
                 var result = (reject / initial) * 100;
+                // get 2 decimal
+                result = result.toFixed(2);
                 $('#reject_weight_presentase').text(result+'%');
                 // final weight
                 var final = initial - reject;

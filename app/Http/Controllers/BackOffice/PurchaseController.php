@@ -9,7 +9,6 @@ use App\Models\SubCategory;
 // suppliers
 use App\Models\Supplier;
 use Illuminate\Support\Facades\DB;
-
 // import purchase
 use App\Models\Purchase;
 // import purchase detail
@@ -68,6 +67,81 @@ class PurchaseController extends Controller
         return view('pages.backoffice.purchase.form', compact('categories','title', 'data','suppliers'));
     }
 
+
+    public function print($id)
+    {
+        $data = Purchase::with('supplier', 'purchase_detail','purchase_detail.subcategory','purchase_detail.subcategory.category')->find($id);
+        // group purchase detail with category
+        $detail = [];
+        foreach ($data->purchase_detail as $key => $purchase) {
+            $detail[$purchase->subcategory->category->name][] = $purchase;
+        }
+        $data->detail = $detail;
+        $title = 'Detail Data Pembelian';
+        $pdf = \PDF::loadView('pages.backoffice.purchase.pdf', compact('data', 'title'));
+        return $pdf->stream('invoice-'.$data->invoice_number.'.pdf');
+    }
+
+    public function report(Request $request){
+        $suppliers = Supplier::all();
+        $data = (object)[];
+        $date = '';
+        $reject_weight_presentase = '';
+        $filter_date = $request->date;
+        if($request->supplier_id){
+            $date = date('Ymd', strtotime($request->date));
+            $list = Purchase::with('supplier', 'purchase_detail','purchase_detail.subcategory','purchase_detail.subcategory.category')->where('supplier_id', $request->supplier_id)->where('invoice_number', 'like','%'.$date.'%')->get();
+            $data = [];
+            foreach ($list as $key => $item) {
+
+                $detail = [];
+                foreach ($item->purchase_detail as $key => $purchase) {
+                    $detail[$purchase->subcategory->category->name][] = $purchase;
+                }
+                $item->detail = $detail;
+                $data[] = $item;
+            }
+            $reject_weight_presentase = number_format(($list->sum('reject_weight') / ($list->sum('final_weight') == 0 ? 1 : $list->sum('final_weight')) * 100), 2);
+        }
+
+        $supplier_id = $request->supplier_id;
+
+        $title = 'Laporan Data Pembelian';
+        return view('pages.backoffice.purchase.report', compact('data', 'title', 'suppliers','date','reject_weight_presentase', 'supplier_id', 'date','filter_date'));
+    }
+
+
+    public function allPrint(Request $request){
+        $suppliers = Supplier::all();
+        $data = (object)[];
+        $date = '';
+        $reject_weight_presentase = '';
+        $filter_date = $request->date;
+
+        if($request->supplier_id){
+            $date = date('Ymd', strtotime($request->date));
+            $list = Purchase::with('supplier', 'purchase_detail','purchase_detail.subcategory','purchase_detail.subcategory.category')->where('supplier_id', $request->supplier_id)->where('invoice_number', 'like','%'.$date.'%')->get();
+            $data = [];
+            foreach ($list as $key => $item) {
+
+                $detail = [];
+                foreach ($item->purchase_detail as $key => $purchase) {
+                    $detail[$purchase->subcategory->category->name][] = $purchase;
+                }
+                $item->detail = $detail;
+                $data[] = $item;
+            }
+
+            $reject_weight_presentase = number_format(($list->sum('reject_weight') / ($list->sum('final_weight') == 0 ? 1 : $list->sum('final_weight')) * 100), 2);
+        }
+
+        $supplier_id = $request->supplier_id;
+        $supplier = Supplier::find($supplier_id);
+        $title = 'Laporan Pembelian';
+        $pdf = \PDF::loadView('pages.backoffice.purchase.allpdf', compact('data', 'title', 'suppliers','date','reject_weight_presentase', 'supplier_id', 'date','filter_date','supplier'));
+        return $pdf->stream('invoice-'.$date.'.pdf');
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -94,6 +168,11 @@ class PurchaseController extends Controller
             DB::beginTransaction();
             $total = array_sum($request->subtotal);
             $invoice_number = $request->invoice_number.'-'.$request->invoice_code;
+            // validate invoice number
+            $check = Purchase::where('invoice_number', $invoice_number)->first();
+            if ($check) {
+                return back()->with('failed', 'Nomor invoice sudah ada!');
+            }
             $data = ([
                 'supplier_id' => $request->supplier_id,
                 'invoice_number' => $invoice_number,
@@ -105,7 +184,7 @@ class PurchaseController extends Controller
                 'subtotal' => array_sum($request->subtotal),
                 'tax' => $request->tax ?? 0,
                 'total' => $total,
-                'description' => $request->description,
+                'description' => $request->description ?? '-',
                 'status' => 'paid',
                 'user_id' => auth()->user()->id,
             ]);
@@ -128,6 +207,17 @@ class PurchaseController extends Controller
         }
     }
 
+
+    public function checkInvoice($invoice)
+    {
+        $data = Purchase::where('invoice_number', $invoice)->first();
+        if ($data) {
+            return response()->json(['status' => 'success', 'data' => $data]);
+        } else {
+            return response()->json(['status' => 'failed', 'message' => 'Data tidak ditemukan!']);
+        }
+    }
+
     /**
      * Display the specified resource.
      *
@@ -136,7 +226,15 @@ class PurchaseController extends Controller
      */
     public function show($id)
     {
-        //
+        $data = Purchase::with('supplier', 'purchase_detail','purchase_detail.subcategory','purchase_detail.subcategory.category')->find($id);
+        // group purchase detail with category
+        $detail = [];
+        foreach ($data->purchase_detail as $key => $purchase) {
+            $detail[$purchase->subcategory->category->name][] = $purchase;
+        }
+        $data->detail = $detail;
+        $title = 'Detail Data Pembelian';
+        return view('pages.backoffice.purchase.show', compact('data', 'title'));
     }
 
     /**

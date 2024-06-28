@@ -44,6 +44,7 @@ class SupplierController extends Controller
         ];
         return view('pages.backoffice.supplier.form', compact('title', 'data'));
     }
+    
 
     /**
      * Store a newly created resource in storage.
@@ -56,7 +57,6 @@ class SupplierController extends Controller
         //
         $request->validate([
             'name' => 'required',
-            'alias' => 'required',
             'address' => 'required',
             'phone' => 'required',
             'bank' => 'required',
@@ -66,7 +66,7 @@ class SupplierController extends Controller
         try {
             Supplier::create([
                 'name' => $request->name,
-                'alias' => $request->alias,
+                'alias' => $request->alias ?? '',
                 'address' => $request->address,
                 'phone' => $request->phone,
                 'bank' => $request->bank,
@@ -121,7 +121,6 @@ class SupplierController extends Controller
         //
         $request->validate([
             'name' => 'required',
-            'alias' => 'required',
             'address' => 'required',
             'phone' => 'required',
             'bank' => 'required',

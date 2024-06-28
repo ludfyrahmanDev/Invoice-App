@@ -38,7 +38,7 @@
                             @foreach ($data as $item)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $item->name }} <br> ({{$item->alias}})</td>
+                                    <td>{{ $item->name }} <br> @if($item->alias != '')({{$item->alias}}) @endif</td>
                                     <td>{{ $item->address }}</td>
                                     <td>{{ $item->phone }}</td>
                                     <td>{{ $item->bank }} - {{ $item->account_number }}</td>

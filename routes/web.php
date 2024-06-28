@@ -32,6 +32,10 @@ Route::middleware(['auth',  'verified'])->group(function () {
     Route::resource('category', CategoryController::class);
     Route::resource('supplier', SupplierController::class);
     Route::resource('purchase', PurchaseController::class);
+    // purchase.print
+    Route::get('purchase/{purchase}/print', [PurchaseController::class, 'print'])->name('purchase.print');
+    Route::get('purchaseallPrint', [PurchaseController::class, 'allPrint'])->name('purchase.allPrint');
+    Route::get('purchaseReport', [PurchaseController::class, 'report'])->name('purchase.report');
     Route::resource('sub_category', SubCategoryController::class);
 
 });

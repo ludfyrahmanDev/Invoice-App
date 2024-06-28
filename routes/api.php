@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\BackOffice\SaleController;
+use App\Http\Controllers\BackOffice\PurchaseController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -20,5 +20,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
-Route::get('/getItem/{type}/{trans}', [SaleController::class, 'itemByType'])->name('itemByType');
-Route::get('/getVoucher/{code}', [SaleController::class, 'voucherItem'])->name('voucherItem');
+// route check invoice
+Route::get('check-invoice/{invoice}', [PurchaseController::class, 'checkInvoice']);

@@ -16,4 +16,9 @@ class PurchaseDetail extends Model
         'price',
         'subtotal',
     ];
+
+    public function subcategory()
+    {
+        return $this->belongsTo(SubCategory::class, 'subcategory_id', 'id');
+    }
 }
