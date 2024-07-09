@@ -26,11 +26,12 @@
                     <table class="table text-md-nowrap" id="example1">
                         <thead>
                             <tr>
-                                <th class="wd-15p border-bottom-0">No</th>
-                                <th class="wd-20p border-bottom-0">Nama</th>
+                                <th class="wd-5p border-bottom-0">No</th>
+                                <th class="wd-30p border-bottom-0">Nama</th>
                                 <th class="wd-20p border-bottom-0">Alamat</th>
-                                <th class="wd-25p border-bottom-0">Telepon</th>
-                                <th class="wd-25p border-bottom-0">Bank</th>
+                                <th class="wd-15p border-bottom-0">Telepon</th>
+                                <th class="wd-15p border-bottom-0">Bank</th>
+                                <th class="wd-25p border-bottom-0">Pajak</th>
                                 <th class="wd-25p border-bottom-0">Aksi</th>
                             </tr>
                         </thead>
@@ -42,6 +43,7 @@
                                     <td>{{ $item->address }}</td>
                                     <td>{{ $item->phone }}</td>
                                     <td>{{ $item->bank }} - {{ $item->account_number }}</td>
+                                    <td>{{ $item->pajak }}</td>
                                     <td class="d-flex">
                                         <a href="{{ route('supplier.edit', $item->id)}}" class="btn btn-sm btn-info me-2"> <i class="mdi mdi-pencil"></i>
                                             Ubah</a>

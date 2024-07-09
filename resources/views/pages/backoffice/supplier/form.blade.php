@@ -65,7 +65,7 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="">Nama Bank <span class="tx-danger">*</span></label>
                                     <input type="text" {{$data->type == 'detail' ? 'disabled' :''}} id="bank" name="bank"
@@ -78,13 +78,26 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="">Nomor Rekening <span class="tx-danger">*</span></label>
                                     <input type="text" {{$data->type == 'detail' ? 'disabled' :''}} id="account_number" name="account_number"
                                         class="form-control @error('account_number') parsley-error @enderror" placeholder="no rekening"
                                         value="{{ $data->account_number == '' ? old('account_number') : $data->account_number }}">
                                     @error('account_number')
+                                        <ul class="parsley-errors-list filled" id="parsley-id-5">
+                                            <li class="parsley-required">{{ $message }}</li>
+                                        </ul>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="">Pajak</label>
+                                    <input type="number" {{$data->type == 'detail' ? 'disabled' :''}} id="pajak" name="pajak"
+                                        class="form-control @error('pajak') parsley-error @enderror" placeholder="Pajak(Opsional)"
+                                        value="{{ $data->pajak == '' ? old('pajak') : $data->pajak }}">
+                                    @error('pajak')
                                         <ul class="parsley-errors-list filled" id="parsley-id-5">
                                             <li class="parsley-required">{{ $message }}</li>
                                         </ul>
