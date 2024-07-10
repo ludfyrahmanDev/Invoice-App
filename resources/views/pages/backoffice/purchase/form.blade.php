@@ -49,7 +49,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="">Belandang <span class="tx-danger">*</span></label>
-                                    <select name="supplier_id" class="form-control select2 @error('supplier_id') parsley-error @enderror" id="">
+                                    <select name="supplier_id" class="form-control select2 @error('supplier_id') parsley-error @enderror" id="supplier_id">
                                         <option value="">Pilih Belandang</option>
                                         @foreach ($suppliers as $item)
                                             <option {{$item->id == $data->supplier_id ? 'selected' : ''}} value="{{ $item->id }}">{{ $item->name }} / {{ $item->alias}}</option>
@@ -152,7 +152,7 @@
                                     <select name="category_id" class="form-control select2 @error('category_id') parsley-error @enderror" id="item">
                                         <option value="">Pilih Jenis</option>
                                         @foreach ($categories as $category)
-                                            <option {{$category->id == $data->category_id ? 'selected' : ''}} data-price='{{$category->selling_price}}' value="{{ $category->id }}">{{ $category->name }}({{$category->category->name}})</option>
+                                            <option {{$category->id == $data->category_id ? 'selected' : ''}} data-price='{{$category->purchase_price}}' value="{{ $category->id }}">{{ $category->name }}({{$category->category->name}})</option>
                                         @endforeach
                                     </select>
                                     @error('category_id')
@@ -281,6 +281,7 @@
                 var afkir = $('#reject_weight').val();
                 calculateAfkir(val, afkir);
             });
+            calculateAfkir($('#initial_weight').val(), $('#reject_weight').val());
             $('#reject_weight').change(function() {
                 var val = $(this).val();
                 var initial = $('#initial_weight').val();
