@@ -20,7 +20,7 @@ class SubCategoryController extends Controller
     public function index()
     {
         //
-        $data = SubCategory::with('category')->get();
+        $data = SubCategory::with('category')->orderBy('category_id', 'desc')->get();
         $title = 'List Data Sub Kategori';
         return view('pages.backoffice.sub_category.index', compact('data', 'title'));
     }
@@ -115,7 +115,8 @@ class SubCategoryController extends Controller
         //
         $request->validate([
             'name' => 'required',
-            // 'description' => 'required',
+            'purchase_price' => 'required',
+            'selling_price' => 'required',
             'category_id' => 'required',
         ]);
         try {
@@ -123,6 +124,8 @@ class SubCategoryController extends Controller
                 'name' => $request->name,
                 'description' => $request->description ?? '-',
                 'category_id' => $request->category_id,
+                'purchase_price' => $request->purchase_price,
+                'selling_price' => $request->selling_price,
             ]);
 
             SubCategory::where('id', $id)->update($data);

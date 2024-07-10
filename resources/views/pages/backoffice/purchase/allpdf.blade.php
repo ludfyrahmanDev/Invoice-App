@@ -82,7 +82,7 @@
                 <tbody>
                     <tr>
                         <td style="width: 20%">{{ $parentItem->invoice_date }}</td>
-                        <td style="width: 20%">{{ $parentItem->supplier->name }}</td>
+                        <td style="width: 20%">{{ $parentItem->supplier->name.'/'.$parentItem->supplier->alias }}</td>
                         <td style="width: 20%">{{ $parentItem->initial_weight }}</td>
                         <td style="width: 20%">{{ $parentItem->reject_weight }}</td>
                         <td style="width: 20%">{{ $parentItem->final_weight }}</td>

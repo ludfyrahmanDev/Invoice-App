@@ -163,7 +163,7 @@ class PurchaseController extends Controller
             'final_weight' => 'required',
             'reject_weight' => 'required',
             'subtotal' => 'required',
-            'description' => 'required',
+            'description' => 'nullable',
         ]);
 
         try {
