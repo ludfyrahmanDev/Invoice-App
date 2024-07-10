@@ -52,13 +52,13 @@ class CategoryController extends Controller
         //
         $request->validate([
             'name' => 'required',
-            'description' => 'required',
+            // 'description' => 'null',
         ]);
 
         try {
             Category::create([
                 'name' => $request->name,
-                'description' => $request->description,
+                'description' => $request->description ?? '-',
                 'slug' => $request->slug,
             ]);
             return redirect('category')->with('success', 'Berhasil menambah data!');
@@ -110,12 +110,12 @@ class CategoryController extends Controller
         //
         $request->validate([
             'name' => 'required',
-            'description' => 'required',
+            // 'description' => 'required',
         ]);
         try {
             $data = ([
                 'name' => $request->name,
-                'description' => $request->description,
+                'description' => $request->description ?? '-',
             ]);
 
             Category::where('id', $id)->update($data);
