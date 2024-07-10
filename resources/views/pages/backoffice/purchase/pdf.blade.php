@@ -53,10 +53,10 @@
             <h4 class="text-start">INVOICE No. {{$data->invoice_number}}</h4>
             <h5>Periode: {{ date('d-M-Y', strtotime($data->invoice_date)) }}</h5>
         </div>
-        <div class="col-md-6 text-end" style="float:right;margin-top:-40px">
+        <div class="col-md-6 text-end" style="float:right;margin-top:-70px">
             <h5>User: {{ auth()->user()->username }}</h5>
             <h5>Tanggal: {{ date('d-M-Y') }}</h5>
-            <h5>% AFKIRAN: {{ $data->reject_weight_presentase }}%</h5>
+            <h2>% AFKIRAN: {{ $data->reject_weight_presentase }}%</h2>
         </div>
         <div class="col-md-12">
             <table class="table mt-2">
@@ -131,7 +131,7 @@
             </table>
         </div>
         <div class="col-md-6">
-            <h6>Susut:{{$data->final_weight - $all_qty}}</h6>
+            <h2>Susut:{{$data->final_weight - $all_qty}}</h2>
         </div>
         <div class="col-md-6">
             <h5>Keterangan: {{$data->description}}</h5>

@@ -66,7 +66,7 @@ class SubCategoryController extends Controller
         try {
             SubCategory::create([
                 'name' => $request->name,
-                'description' => $request->description,
+                'description' => $request->description ?? '-',
                 'purchase_price' => $request->purchase_price,
                 'selling_price' => $request->selling_price,
                 'category_id' => $request->category_id,
@@ -115,13 +115,13 @@ class SubCategoryController extends Controller
         //
         $request->validate([
             'name' => 'required',
-            'description' => 'required',
+            // 'description' => 'required',
             'category_id' => 'required',
         ]);
         try {
             $data = ([
                 'name' => $request->name,
-                'description' => $request->description,
+                'description' => $request->description ?? '-',
                 'category_id' => $request->category_id,
             ]);
 
