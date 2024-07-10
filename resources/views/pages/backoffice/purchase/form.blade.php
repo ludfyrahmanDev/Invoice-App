@@ -182,14 +182,14 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="">Harga Jual <span class="tx-danger">*</span></label>
+                                    <label for="">Harga Beli <span class="tx-danger">*</span></label>
                                     <div class="input-group">
                                         <div class="input-group-text">
                                             <div class="input-group-text">
                                                 Rp
                                             </div>
                                         </div><!-- input-group-text -->
-                                        <input value="{{ $data->selling_price == '' ? old('selling_price') : $data->selling_price }}" class="form-control @error('selling_price') parsley-error @enderror" name='selling_price' placeholder="Harga Jual" type="number">
+                                        <input value="{{ $data->selling_price == '' ? old('selling_price') : $data->selling_price }}" class="form-control @error('selling_price') parsley-error @enderror" name='selling_price' placeholder="Harga Beli" type="number">
 
                                     </div>
                                     @error('selling_price')
