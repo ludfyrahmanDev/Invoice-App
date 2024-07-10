@@ -41,7 +41,9 @@ class PurchaseController extends Controller
     {
         //
         $title = 'Tambah Data Pembelian';
-        $invoice_number = date('Ymd');
+        $invoice_number = date('Ymd').rand(1,10);
+        // add rand number to invoice number
+
         $data = (object)[
             'name'              => '',
             'supplier_id'       => '',
@@ -161,7 +163,7 @@ class PurchaseController extends Controller
             'final_weight' => 'required',
             'reject_weight' => 'required',
             'subtotal' => 'required',
-            'description' => 'required',
+            'description' => 'nullable',
         ]);
 
         try {

@@ -33,11 +33,30 @@ class Purchase extends Model
         return $this->belongsTo(Supplier::class, 'supplier_id', 'id');
     }
 
+    public function getInitialWeightAttribute($value)
+    {
+        // remove decimal
+        return number_format($value, 0);
+    }
+
+
+    public function getFinalWeightAttribute($value)
+    {
+        // remove decimal
+        return number_format($value, 0);
+    }
+
+    public function getRejectWeightAttribute($value)
+    {
+        // remove decimal
+        return number_format($value, 0);
+    }
+
     public function getRejectWeightPresentaseAttribute()
     {
         $result =$this->reject_weight / $this->initial_weight * 100;
         // get 2 decimal
-        return number_format($result, 2);
+        return number_format($result, 0);
     }
 
     public function purchase_detail()

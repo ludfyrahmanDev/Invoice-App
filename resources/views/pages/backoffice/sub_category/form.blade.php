@@ -91,7 +91,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-12">
+                            <div class="col-md-12 d-none">
                                 <div class="form-group">
                                     <label for="">Deskripsi </label>
                                     <textarea rows="5" type="text" name="description"

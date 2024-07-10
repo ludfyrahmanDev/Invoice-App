@@ -50,7 +50,7 @@
                                 <h5>Tanggal Transaksi: {{ $date }}</h5>
                             </div>
                             <div class="col-md-6 text-end">
-                                <h5>% AFKIRAN: {{ $reject_weight_presentase }}%</h5>
+                                <h2>% AFKIRAN: {{ $reject_weight_presentase }}%</h2>
                             </div>
                             @foreach ($data as $parentItem)
                             <div class="col-md-12">

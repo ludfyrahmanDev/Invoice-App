@@ -20,7 +20,7 @@ class SubCategoryController extends Controller
     public function index()
     {
         //
-        $data = SubCategory::with('category')->get();
+        $data = SubCategory::with('category')->orderBy('category_id', 'desc')->get();
         $title = 'List Data Sub Kategori';
         return view('pages.backoffice.sub_category.index', compact('data', 'title'));
     }
@@ -37,8 +37,8 @@ class SubCategoryController extends Controller
         $data = (object)[
             'name'              => '',
             'description'       => '',
-            'purchase_price'    => '',
-            'selling_price'     => '',
+            'purchase_price'    => 0,
+            'selling_price'     => 0,
             'category_id'       => '',
             'type'              => 'create',
         ];
@@ -66,7 +66,7 @@ class SubCategoryController extends Controller
         try {
             SubCategory::create([
                 'name' => $request->name,
-                'description' => $request->description,
+                'description' => $request->description ?? '-',
                 'purchase_price' => $request->purchase_price,
                 'selling_price' => $request->selling_price,
                 'category_id' => $request->category_id,
@@ -115,14 +115,17 @@ class SubCategoryController extends Controller
         //
         $request->validate([
             'name' => 'required',
-            'description' => 'required',
+            'purchase_price' => 'required',
+            'selling_price' => 'required',
             'category_id' => 'required',
         ]);
         try {
             $data = ([
                 'name' => $request->name,
-                'description' => $request->description,
+                'description' => $request->description ?? '-',
                 'category_id' => $request->category_id,
+                'purchase_price' => $request->purchase_price,
+                'selling_price' => $request->selling_price,
             ]);
 
             SubCategory::where('id', $id)->update($data);

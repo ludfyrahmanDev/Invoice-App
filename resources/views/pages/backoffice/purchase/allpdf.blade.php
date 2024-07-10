@@ -53,10 +53,10 @@
         <div class="col-md-6">
             <h5>Tanggal Transaksi: {{ $date }}</h5>
         </div>
-        <div class="col-md-6 text-end right" style="margin-top:-40px">
+        <div class="col-md-6 text-end right" style="margin-top:-70px">
             <h5>User: {{ auth()->user()->username }}</h5>
             <h5>Tanggal: {{ date('d-M-Y') }}</h5>
-            <h5>% AFKIRAN: {{ $reject_weight_presentase }}%</h5>
+            <h2>% AFKIRAN: {{ $reject_weight_presentase }}%</h2>
         </div>
         @php
         $all_qty = 0;
@@ -82,7 +82,7 @@
                 <tbody>
                     <tr>
                         <td style="width: 20%">{{ $parentItem->invoice_date }}</td>
-                        <td style="width: 20%">{{ $parentItem->supplier->name }}</td>
+                        <td style="width: 20%">{{ $parentItem->supplier->name.'/'.$parentItem->supplier->alias }}</td>
                         <td style="width: 20%">{{ $parentItem->initial_weight }}</td>
                         <td style="width: 20%">{{ $parentItem->reject_weight }}</td>
                         <td style="width: 20%">{{ $parentItem->final_weight }}</td>
@@ -143,7 +143,7 @@
         </table>
 
         <div class="col-md-6">
-            <h6>Susut:{{$all_final - $all_qty ?? 0}}</h6>
+            <h2>Susut:{{$all_final - $all_qty ?? 0}}</h2>
         </div>
         <div class="col-md-6 text-center left">
             <h5>Kasir</h5>

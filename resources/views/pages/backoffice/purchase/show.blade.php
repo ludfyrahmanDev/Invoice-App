@@ -25,7 +25,7 @@
                             <h5>Tanggal Transaksi: {{ $data->invoice_date }}</h5>
                         </div>
                         <div class="col-md-6 text-end">
-                            <h5>% AFKIRAN: {{ $data->reject_weight_presentase }}%</h5>
+                            <h2>% AFKIRAN: {{ $data->reject_weight_presentase }}%</h2>
                         </div>
                         <div class="col-md-12">
                             <table class="table mt-2">
@@ -39,7 +39,7 @@
                                 <tbody>
                                     <tr>
                                         <td>{{ $data->invoice_date }}</td>
-                                        <td>{{ $data->supplier->name }}</td>
+                                        <td>{{ $data->supplier->name.'/'.$data->supplier->alias }}</td>
                                         <td>{{ $data->initial_weight }}</td>
                                         <td>{{ $data->reject_weight }}</td>
                                         <td>{{ $data->final_weight }}</td>
