@@ -39,7 +39,7 @@
                                 <tbody>
                                     <tr>
                                         <td>{{ $data->invoice_date }}</td>
-                                        <td>{{ $data->supplier->name }}</td>
+                                        <td>{{ $data->supplier->name.'/'.$data->supplier->alias }}</td>
                                         <td>{{ $data->initial_weight }}</td>
                                         <td>{{ $data->reject_weight }}</td>
                                         <td>{{ $data->final_weight }}</td>
