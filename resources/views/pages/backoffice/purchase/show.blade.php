@@ -7,6 +7,7 @@
                 <h4 class="card-title mb-1 d-flex justify-content-between">{{ $title }}
                     <a href="{{route('purchase.print', $data->id)}}" target="_blank"><button class="btn btn-primary">Cetak</button></a>
                 </h4>
+                <a href="{{ route('purchase.index') }}" class="btn btn-info">Lihat Semua Transaksi</a>
                 @if (session('failed'))
                     <div class="alert alert-danger mg-b-0" role="alert">
                         <button aria-label="Close" class="close" data-bs-dismiss="alert" type="button">

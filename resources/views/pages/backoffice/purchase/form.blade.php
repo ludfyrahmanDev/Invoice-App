@@ -309,7 +309,7 @@
                             <div>
                                 <button type="submit" class="btn btn-primary">Simpan</button>
                                 <button type="reset" class="btn btn-secondary">Batal</button>
-                                <a href="{{ route('purchase.index') }}" class="btn btn-info">Kembali</a>
+                                <a href="{{ route('purchase.index') }}" class="btn btn-info">Lihat Transaksi</a>
                             </div>
                         </div>
                     </form>
