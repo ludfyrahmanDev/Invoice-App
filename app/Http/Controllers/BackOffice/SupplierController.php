@@ -40,6 +40,7 @@ class SupplierController extends Controller
             'phone'             => '',
             'bank'              => '',
             'account_number'    => '',
+            'pajak'    => '',
             'type'              => 'create',
         ];
         return view('pages.backoffice.supplier.form', compact('title', 'data'));
@@ -70,6 +71,7 @@ class SupplierController extends Controller
                 'address' => $request->address,
                 'phone' => $request->phone,
                 'bank' => $request->bank,
+                'pajak' => $request->pajak??0,
                 'account_number' => $request->account_number,
             ]);
             return redirect('supplier')->with('success', 'Berhasil menambah data!');
@@ -134,6 +136,7 @@ class SupplierController extends Controller
             $supplier->phone = $request->phone;
             $supplier->bank = $request->bank;
             $supplier->account_number = $request->account_number;
+            $supplier->pajak = $request->pajak;
             $supplier->save();
             return redirect('supplier')->with('success', 'Berhasil mengubah data!');
         } catch (\Throwable $th) {

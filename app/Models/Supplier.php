@@ -15,6 +15,7 @@ class Supplier extends Model
         'phone',
         'bank',
         'account_number',
+        'pajak',
     ];
 
 

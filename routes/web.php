@@ -8,6 +8,7 @@ use App\Http\Controllers\BackOffice\CategoryController;
 use App\Http\Controllers\BackOffice\PurchaseController;
 use App\Http\Controllers\BackOffice\SubCategoryController;
 use App\Http\Controllers\BackOffice\SupplierController;
+use App\Http\Controllers\BackOffice\PeminjamanController;
 use App\Http\Controllers\SiteController;
 use App\Models\Voucher;
 
@@ -32,10 +33,12 @@ Route::middleware(['auth',  'verified'])->group(function () {
     Route::resource('category', CategoryController::class);
     Route::resource('supplier', SupplierController::class);
     Route::resource('purchase', PurchaseController::class);
+    Route::resource('peminjaman', PeminjamanController::class);
     // purchase.print
     Route::get('purchase/{purchase}/print', [PurchaseController::class, 'print'])->name('purchase.print');
     Route::get('purchaseallPrint', [PurchaseController::class, 'allPrint'])->name('purchase.allPrint');
     Route::get('purchaseReport', [PurchaseController::class, 'report'])->name('purchase.report');
+    Route::get('approveTransaction/{id}', [PeminjamanController::class, 'approveTransaction']);
     Route::resource('sub_category', SubCategoryController::class);
 
 });
