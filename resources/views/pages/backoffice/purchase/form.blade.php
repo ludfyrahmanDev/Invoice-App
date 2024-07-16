@@ -117,9 +117,14 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="" class="d-none">Berat Afkir <span class="tx-danger">*</span> <b id="reject_weight_presentase">0%</b></label>
+                                            <label for="" class="d-none">Berat Afkir <span class="tx-danger">*</span></label>
 
                                             <div class="input-group">
+                                                <div class="input-group-text">
+                                                    <div class="input-group-text">
+                                                        <b id="reject_weight_presentase">0%</b>
+                                                    </div>
+                                                </div><!-- input-group-text -->
                                                 <input type="number" min="1" id="reject_weight" name="reject_weight"
                                                 class="form-control @error('reject_weight') parsley-error @enderror" placeholder="Berat Afkir"
                                                 value="{{ $data->reject_weight == '' ? old('reject_weight') : $data->reject_weight }}">
