@@ -4,9 +4,11 @@ namespace App\Http\Controllers\BackOffice;
 
 use App\Exports\PeminjamanExport;
 use App\Models\Peminjaman;
+use App\Models\PeminjamanDetail;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use Auth;
 
@@ -150,14 +152,34 @@ class PeminjamanController extends Controller
         }
     }
 
-    public function approveTransaction($id)
+    public function approveTransaction(Request $request, $id)
     {
+        
         try {
-            Peminjaman::where('id', $id)->update(['status' => 'paid', 'updated_by' => Auth::user()->id]);
-            return true;
+            DB::beginTransaction();
+            $cek = PeminjamanDetail::where('peminjaman_id', $id)->sum('total_payment');
+            $data = Peminjaman::where('id', $id)->first();
+            $tmpTotal = intval($request->total_payment) + $cek;
+            if ($tmpTotal > $data->quantity) {
+                
+                return redirect('peminjaman')->with('failed', 'Jumlah pembayaran melebihi jumlah pinjaman!');
+            }
+            PeminjamanDetail::create([
+                'peminjaman_id'=>$id,
+                'type_payment'=>$request->type_payment,
+                'total_payment'=>$request->total_payment,
+                'created_by'=>Auth::user()->id,
+                'updated_by'=>Auth::user()->id,
+            ]);
+            if ($tmpTotal == $data->quantity) {
+                Peminjaman::where('id', $id)->update(['status' => 'paid', 'updated_by' => Auth::user()->id]);
+            }
+            
+            DB::commit();
+            return redirect('peminjaman')->with('success', 'Berhasil melakukan pembayaran!');
         } catch (\Throwable $th) {
-            throw new Exception($th, 1);
-            return false;
+            DB::rollBack();
+            return back()->with('failed', 'Gagal melakukan pembayaran!');
         }
     }
 
