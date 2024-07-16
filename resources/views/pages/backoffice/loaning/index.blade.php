@@ -14,7 +14,7 @@
                             <div class="d-flex">
                                 <div class="">
                                     <h4 class="tx-20 fw-bold mb-1 text-white">{{ $summary['paid'] }}</h4>
-                                    
+
                                 </div>
 
                             </div>
@@ -34,7 +34,7 @@
                                 <div class="">
                                     <h4 class="tx-20 fw-bold mb-1 text-white">{{ $summary['unpaid'] }}
                                     </h4>
-                                    
+
                                 </div>
 
                             </div>
@@ -74,6 +74,54 @@
                     </button>
                     Gagal menyelesaikan pinjaman
                 </div>
+            </div>
+            <div class="row m-2">
+                <fieldset>
+                    <legend>Filter</legend>
+                </fieldset>
+                <form class="form-horizontal" action="{{ url('exportPeminjaman') }}" method="POST"
+                    enctype="multipart/form-data" data-parsley-validate="">
+                    @csrf
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="">Supplier</label>
+                                <select id="supplier" name="supplier" class="form-control form-control-sm"
+                                    placeholder="supplier">
+                                    <option value="">Pilih Supplier</option>
+                                    @foreach ($dataSupplier as $item)
+                                        <option value="{{ $item->id }}">
+                                            {{ $item->name }}</option>
+                                    @endforeach
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="">Tanggal Peminjaman</label>
+                                <input type="text" id="start" name="start" placeholder="Tanggal Awal"
+                                    onfocus="(this.type='date')" onblur="(this.type='text')"
+                                    class="form-control form-control-sm " placeholder="Start">
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="" style="color: white !important;">Selesai</label>
+                                <input type="text" id="end" name="end" placeholder="Tanggal Akhir"
+                                    onfocus="(this.type='date')" onblur="(this.type='text')"
+                                    class="form-control form-control-sm" placeholder="End">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-sm btn-success " style="margin-top: 30px !important;" id="filter-button"
+                                type="button"><i class="mdi mdi-filter"></i> Filter</button>
+                            <button class="btn btn-sm btn-primary " style="margin-top: 30px !important;" type="submit"><i
+                                    class="mdi mdi-file-export"></i> Export</button>
+                        </div>
+                    </div>
+                </form>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -128,6 +176,27 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="text/javascript">
+        $(document).ready(function() {
+            $('#filter-button').click(function() {
+                var supplier = $('#supplier').val();
+                var start = $('#start').val();
+                var end = $('#end').val();
+
+                if (!supplier && !start && !end) {
+                    alert('Input harus diisi');
+                } else {
+                    var param = '?';
+                    if (supplier) {
+                        param = param + 'supplier=' + supplier;
+                    }
+                    if (start != "" && end != '') {
+                        param = param + "&start=" + (start ?? '') + "&end=" + (end ?? '')
+                    }
+                    window.location.href = `{{ url('peminjaman') }}`+param;
+                }
+            });
+        });
+
         function approve(id) {
             $.ajax({
                 url: '/approveTransaction/' + id,
