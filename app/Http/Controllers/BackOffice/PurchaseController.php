@@ -205,7 +205,8 @@ class PurchaseController extends Controller
                 PurchaseDetail::create($data_detail);
             }
             DB::commit();
-            return redirect('purchase')->with('success', 'Berhasil menambah data!');
+            // redirect to detail
+            return redirect('purchase/'.$purchase_id)->with('success', 'Berhasil menambah data!');
         } catch (\Throwable $th) {
             return back()->with('failed', 'Gagal menambah data!'.$th->getMessage());
         }
