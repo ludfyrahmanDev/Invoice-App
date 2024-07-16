@@ -100,7 +100,7 @@
                             </table>
                         </div>
                         <div class="col-md-6">
-                            <h6>Susut:{{$data->final_weight - $all_qty}}</h6>
+                            <h4>Susut:{{$data->final_weight - $all_qty}}</h4>
                         </div>
                         <div class="col-md-6">
                             <h5>Keterangan: {{$data->description}}</h5>

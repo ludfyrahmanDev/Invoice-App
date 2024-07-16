@@ -15,7 +15,7 @@
                             <li aria-haspopup="true"><a href="{{route('user.index')}}" class="slide-item d-none">Pengguna</a></li>
                             <li aria-haspopup="true"><a href="{{route('category.index')}}" class="slide-item">Kategori</a></li>
                             <li aria-haspopup="true"><a href="{{route('sub_category.index')}}" class="slide-item"> Sub Kategori</a></li>
-                            <li aria-haspopup="true"><a href="{{route('supplier.index')}}" class="slide-item"> Supplier</a></li>
+                            <li aria-haspopup="true"><a href="{{route('supplier.index')}}" class="slide-item"> Supplier / Belandang</a></li>
                             <li aria-haspopup="true" class="d-none"><a href="{{route('sub_category.index')}}" class="slide-item"> Customer</a></li>
                         </ul>
                     </li>

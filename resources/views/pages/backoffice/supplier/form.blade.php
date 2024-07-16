@@ -67,7 +67,7 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="">Nama Bank <span class="tx-danger">*</span></label>
+                                    <label for="">Nama Bank </label>
                                     <input type="text" {{$data->type == 'detail' ? 'disabled' :''}} id="bank" name="bank"
                                         class="form-control @error('bank') parsley-error @enderror" placeholder="nama bank"
                                         value="{{ $data->bank == '' ? old('bank') : $data->bank }}">
@@ -80,7 +80,7 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="">Nomor Rekening <span class="tx-danger">*</span></label>
+                                    <label for="">Nomor Rekening </label>
                                     <input type="text" {{$data->type == 'detail' ? 'disabled' :''}} id="account_number" name="account_number"
                                         class="form-control @error('account_number') parsley-error @enderror" placeholder="no rekening"
                                         value="{{ $data->account_number == '' ? old('account_number') : $data->account_number }}">

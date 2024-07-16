@@ -45,7 +45,7 @@ class SupplierController extends Controller
         ];
         return view('pages.backoffice.supplier.form', compact('title', 'data'));
     }
-    
+
 
     /**
      * Store a newly created resource in storage.
@@ -60,8 +60,8 @@ class SupplierController extends Controller
             'name' => 'required',
             'address' => 'required',
             'phone' => 'required',
-            'bank' => 'required',
-            'account_number' => 'required',
+            'bank' => 'nullable',
+            'account_number' => 'nullable',
         ]);
 
         try {
@@ -70,9 +70,9 @@ class SupplierController extends Controller
                 'alias' => $request->alias ?? '',
                 'address' => $request->address,
                 'phone' => $request->phone,
-                'bank' => $request->bank,
+                'bank' => $request->bank ?? '',
                 'pajak' => $request->pajak??0,
-                'account_number' => $request->account_number,
+                'account_number' => $request->account_number ?? '',
             ]);
             return redirect('supplier')->with('success', 'Berhasil menambah data!');
         } catch (\Throwable $th) {
@@ -125,8 +125,8 @@ class SupplierController extends Controller
             'name' => 'required',
             'address' => 'required',
             'phone' => 'required',
-            'bank' => 'required',
-            'account_number' => 'required',
+            'bank' => 'nullable',
+            'account_number' => 'nullable',
         ]);
         try {
             $supplier = Supplier::find($id);
@@ -134,8 +134,8 @@ class SupplierController extends Controller
             $supplier->alias = $request->alias;
             $supplier->address = $request->address;
             $supplier->phone = $request->phone;
-            $supplier->bank = $request->bank;
-            $supplier->account_number = $request->account_number;
+            $supplier->bank = $request->bank ?? '';
+            $supplier->account_number = $request->account_number ?? '';
             $supplier->pajak = $request->pajak;
             $supplier->save();
             return redirect('supplier')->with('success', 'Berhasil mengubah data!');
