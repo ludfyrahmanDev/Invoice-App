@@ -66,7 +66,9 @@ class PurchaseController extends Controller
         ];
         $suppliers = Supplier::all();
         $categories = SubCategory::with('category')->get();
-        return view('pages.backoffice.purchase.form', compact('categories','title', 'data','suppliers'));
+        $parent = Category::with('subcategory')->get();
+        // dd($parent->toArray());
+        return view('pages.backoffice.purchase.form', compact('categories','title', 'data','suppliers', 'parent'));
     }
 
 
@@ -256,7 +258,8 @@ class PurchaseController extends Controller
         $categories = SubCategory::with('category')->get();
         $title = 'Edit Data Pembelian';
         $data->type = 'edit';
-        return view('pages.backoffice.purchase.form', compact('data', 'title','suppliers', 'categories'));
+        $parent = Category::with('subcategory')->get();
+        return view('pages.backoffice.purchase.form', compact('data', 'title','suppliers', 'categories','parent'));
     }
 
     /**

@@ -87,8 +87,11 @@
     <div class="horizontalMenucontainer">
         <div class="page">
             <!-- main-content -->
-            @include('includes.topnav')
-            @include('includes.navbar')
+            {{-- check is route purchase.create --}}
+            @if (Route::currentRouteName() != 'purchase.create')
+                @include('includes.topnav')
+                @include('includes.navbar')
+            @endif
             <div class="main-content horizontal-content">
                 @yield('content-app')
             </div>
