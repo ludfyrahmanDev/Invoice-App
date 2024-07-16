@@ -35,26 +35,29 @@ class Purchase extends Model
 
     public function getInitialWeightAttribute($value)
     {
-        // remove decimal
-        return number_format($value, 0);
+        // remove decimal behind comma
+        $value = str_replace(',', '', number_format($value, 0));
+        return $value;
     }
 
 
     public function getFinalWeightAttribute($value)
     {
         // remove decimal
-        return number_format($value, 0);
+        $value = str_replace(',', '', number_format($value, 0));
+        return $value;
     }
 
     public function getRejectWeightAttribute($value)
     {
         // remove decimal
-        return number_format($value, 0);
+        $value = str_replace(',', '', number_format($value, 0));
+        return $value;
     }
 
     public function getRejectWeightPresentaseAttribute()
     {
-        $result =$this->reject_weight / $this->initial_weight * 100;
+        $result =($this->reject_weight?? 0)/ ($this->initial_weight ?? 0) * 100;
         // get 2 decimal
         return number_format($result, 0);
     }
