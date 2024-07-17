@@ -24,6 +24,12 @@ class Peminjaman extends Model
         return $this->belongsTo(Supplier::class, "supplier_id", "id");
     }
 
+    public function angsuran()
+    {
+        return $this->hasMany(PeminjamanDetail::class, "peminjaman_id", "id");
+    }
+
+
     public function creator()
     {
         return $this->belongsTo(User::class, "created_by", "id");
