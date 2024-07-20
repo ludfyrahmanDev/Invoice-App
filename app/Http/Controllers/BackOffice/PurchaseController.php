@@ -89,12 +89,15 @@ class PurchaseController extends Controller
     public function report(Request $request){
         $suppliers = Supplier::all();
         $data = (object)[];
-        $date = '';
+        $start_date = '';
         $reject_weight_presentase = '';
-        $filter_date = $request->date;
+        $start_date = $request->start_date;
+        $end_date = $request->end_date;
         if($request->supplier_id){
             $date = date('Ymd', strtotime($request->date));
-            $list = Purchase::with('supplier', 'purchase_detail','purchase_detail.subcategory','purchase_detail.subcategory.category')->where('supplier_id', $request->supplier_id)->where('invoice_number', 'like','%'.$date.'%')->get();
+            $list = Purchase::with('supplier', 'purchase_detail','purchase_detail.subcategory','purchase_detail.subcategory.category')
+            ->where('supplier_id', $request->supplier_id)
+            ->where('invoice_number', 'like','%'.$date.'%')->get();
             $data = [];
             foreach ($list as $key => $item) {
 
@@ -108,10 +111,12 @@ class PurchaseController extends Controller
             $reject_weight_presentase = number_format(($list->sum('reject_weight') / ($list->sum('final_weight') == 0 ? 1 : $list->sum('final_weight')) * 100), 2);
         }
 
+        $category = Category::all();
+
         $supplier_id = $request->supplier_id;
 
         $title = 'Laporan Data Pembelian';
-        return view('pages.backoffice.purchase.report', compact('data', 'title', 'suppliers','date','reject_weight_presentase', 'supplier_id', 'date','filter_date'));
+        return view('pages.backoffice.purchase.report', compact('data', 'title', 'suppliers','reject_weight_presentase', 'supplier_id', 'request', 'category'));
     }
 
 

@@ -11,6 +11,7 @@ class Supplier extends Model
     protected $fillable = [
         'name',
         'alias',
+        'parent_id',
         'address',
         'phone',
         'bank',
@@ -23,6 +24,11 @@ class Supplier extends Model
     public function purchase()
     {
         return $this->hasMany(Purchase::class);
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(Supplier::class, "parent_id", "id");
     }
 
 }
