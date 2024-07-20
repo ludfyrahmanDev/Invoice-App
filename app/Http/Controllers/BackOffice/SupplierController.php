@@ -36,6 +36,7 @@ class SupplierController extends Controller
         $data = (object)[
             'name'              => '',
             'alias'             => '',
+            'parent_id'         => '',
             'address'           => '',
             'phone'             => '',
             'bank'              => '',
@@ -43,7 +44,8 @@ class SupplierController extends Controller
             'pajak'    => '',
             'type'              => 'create',
         ];
-        return view('pages.backoffice.supplier.form', compact('title', 'data'));
+        $supplier = Supplier::where('parent_id', null)->get();
+        return view('pages.backoffice.supplier.form', compact('title', 'data', 'supplier'));
     }
 
 
@@ -62,14 +64,21 @@ class SupplierController extends Controller
             'phone' => 'required',
             'bank' => 'nullable',
             'account_number' => 'nullable',
+            // set required parent id if employee is not null
+            'parent_id' => $request->has('employee') ? 'required' : 'nullable',
         ]);
 
+
         try {
+            if(!$request->has('employee')){
+                $request->parent_id = null;
+            }
             Supplier::create([
                 'name' => $request->name,
                 'alias' => $request->alias ?? '',
                 'address' => $request->address,
                 'phone' => $request->phone,
+                'parent_id' => $request->parent_id ?? null,
                 'bank' => $request->bank ?? '',
                 'pajak' => $request->pajak??0,
                 'account_number' => $request->account_number ?? '',
@@ -108,7 +117,8 @@ class SupplierController extends Controller
         $data = Supplier::find($id);
         $title = 'Edit Data Belandang';
         $data->type = 'edit';
-        return view('pages.backoffice.supplier.form', compact('data', 'title'));
+        $supplier = Supplier::where('parent_id', null)->get();
+        return view('pages.backoffice.supplier.form', compact('data', 'title', 'supplier'));
     }
 
     /**
@@ -127,13 +137,17 @@ class SupplierController extends Controller
             'phone' => 'required',
             'bank' => 'nullable',
             'account_number' => 'nullable',
+            'parent_id' => $request->has('employee') ? 'required' : 'nullable',
         ]);
         try {
+            $check = Supplier::where('name', $request->name);
+
             $supplier = Supplier::find($id);
             $supplier->name = $request->name;
-            $supplier->alias = $request->alias;
+            $supplier->alias = $request->alias ?? '';
             $supplier->address = $request->address;
             $supplier->phone = $request->phone;
+            $supplier->parent_id = $request->parent_id ?? null;
             $supplier->bank = $request->bank ?? '';
             $supplier->account_number = $request->account_number ?? '';
             $supplier->pajak = $request->pajak;

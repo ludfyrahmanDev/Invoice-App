@@ -28,9 +28,15 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="">Nama <span class="tx-danger">*</span></label>
+                                    <label for="">Nama <span class="tx-danger">*</span> <input type="checkbox" name="employee" {{$data->parent_id != null ? 'checked' : ''}} id="employee"> Karyawan</label>
+                                    <select name="parent_id" class="form-control {{$data->parent_id ? '' : 'd-none'}}" id="parent_id">
+                                        <option value="">Pilih opsi</option>
+                                        @foreach ($supplier as $item)
+                                        <option value="{{$item->id}}" {{$data->parent_id == $item->id ? 'selected' : ''}}>{{$item->name}}</option>
+                                        @endforeach
+                                    </select>
                                     <input type="text" {{$data->type == 'detail' ? 'disabled' :''}} id="name" name="name"
-                                        class="form-control @error('name') parsley-error @enderror" placeholder="nama"
+                                        class="form-control {{$data->parent_id ? 'd-none' : ''}} @error('name') parsley-error @enderror" placeholder="nama"
                                         value="{{ $data->name == '' ? old('name') : $data->name }}">
                                     @error('name')
                                         <ul class="parsley-errors-list filled" id="parsley-id-5">
@@ -164,6 +170,22 @@
                 var slug = name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
                 $('input[name="slug"]').val(slug);
             });
+            // check employee checked
+            $('#employee').click(function() {
+                if ($(this).is(':checked')) {
+                    $('#parent_id').removeClass('d-none');
+                    $('#name').addClass('d-none');
+                } else {
+                    $('#parent_id').addClass('d-none');
+                    $('#name').removeClass('d-none');
+                }
+            });
+
+            $('#parent_id').change(function() {
+                var name = $(this).find('option:selected').text();
+                $('#name').val(name);
+            });
+
         });
 
     </script>

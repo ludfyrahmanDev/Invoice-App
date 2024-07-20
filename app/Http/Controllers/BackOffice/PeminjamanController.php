@@ -23,7 +23,7 @@ class PeminjamanController extends Controller
     {
         $query = Peminjaman::query();
         if ($request->supplier) {
-            
+
             $query = $query->where("supplier_id", $request->supplier);
         }
         if ($request->start && $request->end) {
@@ -31,8 +31,18 @@ class PeminjamanController extends Controller
         }
         $data = $query->orderBy("id","desc")->get();
         $summary = [
-            'paid' => Peminjaman::where('status', 'paid')->count(),
-            'unpaid' => Peminjaman::where('status', 'unpaid')->count()
+            'paid' => [
+                // make total key and value from total payment in relation angsuran in peminjaman
+                'total' => PeminjamanDetail::sum('total_payment'),
+                'count' => Peminjaman::where('status', 'paid')->count()
+            ],
+            'unpaid' => [
+                'total' => Peminjaman::with('angsuran')->where('status', 'unpaid')->get()->sum(function ($item) {
+                    $total = $item->quantity - $item->angsuran->sum('total_payment');
+                    return $total;
+                }),
+                'count' => Peminjaman::where('status', 'unpaid')->count()
+            ]
         ];
         $title = 'List Data Peminjaman';
         $dataSupplier = Supplier::all();
@@ -154,14 +164,14 @@ class PeminjamanController extends Controller
 
     public function approveTransaction(Request $request, $id)
     {
-        
+
         try {
             DB::beginTransaction();
             $cek = PeminjamanDetail::where('peminjaman_id', $id)->sum('total_payment');
             $data = Peminjaman::where('id', $id)->first();
             $tmpTotal = intval($request->total_payment) + $cek;
             if ($tmpTotal > $data->quantity) {
-                
+
                 return redirect('peminjaman')->with('failed', 'Jumlah pembayaran melebihi jumlah pinjaman!');
             }
             PeminjamanDetail::create([
@@ -174,7 +184,7 @@ class PeminjamanController extends Controller
             if ($tmpTotal == $data->quantity) {
                 Peminjaman::where('id', $id)->update(['status' => 'paid', 'updated_by' => Auth::user()->id]);
             }
-            
+
             DB::commit();
             return redirect('peminjaman')->with('success', 'Berhasil melakukan pembayaran!');
         } catch (\Throwable $th) {
@@ -185,14 +195,14 @@ class PeminjamanController extends Controller
 
     public function exportTransaction(Request $request)
     {
-        
+
 
         try {
 
             $belandang = $request->get('supplier');
             $start = $request->get('start');
             $end = $request->get('end');
-            
+
             return Excel::download(new PeminjamanExport($belandang, $start, $end), 'Peminjaman-Export.xlsx');
         } catch (\Throwable $th) {
             throw $th;

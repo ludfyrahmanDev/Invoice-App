@@ -13,7 +13,7 @@
                         <div class="pb-0 mt-0">
                             <div class="d-flex">
                                 <div class="">
-                                    <h4 class="tx-20 fw-bold mb-1 text-white">{{ $summary['paid'] }}</h4>
+                                    <h4 class="tx-20 fw-bold mb-1 text-white">{{ $summary['paid']['count'] }} ({{Helper::price($summary['paid']['total'])}})</h4>
 
                                 </div>
 
@@ -32,9 +32,7 @@
                         <div class="pb-0 mt-0">
                             <div class="d-flex">
                                 <div class="">
-                                    <h4 class="tx-20 fw-bold mb-1 text-white">{{ $summary['unpaid'] }}
-                                    </h4>
-
+                                    <h4 class="tx-20 fw-bold mb-1 text-white">{{ $summary['unpaid']['count'] }} ({{Helper::price($summary['unpaid']['total'])}})</h4>
                                 </div>
 
                             </div>
@@ -274,7 +272,7 @@
 
                                                     </div>
                                                     <div class="modal-footer">
-                                                        
+
                                                         <button class="btn ripple btn-secondary" data-bs-dismiss="modal"
                                                             type="button">Tutup</button>
                                                     </div>
@@ -291,5 +289,5 @@
             </div>
         </div>
     </div>
-    
+
 @endsection

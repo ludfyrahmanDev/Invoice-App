@@ -10,7 +10,7 @@
         <div class="card">
             <div class="card-header">
                 <h4 class="card-title mb-1 d-flex justify-content-between">{{ $title }}
-                    <a href="{{route('purchase.allPrint', ['date' => $filter_date, 'supplier_id' => $supplier_id])}}" target="_blank"><button class="btn btn-primary">Cetak</button></a>
+                    {{-- <a href="{{route('purchase.allPrint', ['date' => $filter_date, 'supplier_id' => $supplier_id])}}" target="_blank"><button class="btn btn-primary">Cetak</button></a> --}}
                 </h4>
                 @if (session('failed'))
                     <div class="alert alert-danger mg-b-0" role="alert">
@@ -25,18 +25,34 @@
                 <div class="card-body pt-0 border p-4">
                     <form action="" method="get">
                         <div class="row">
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-4">
                                 <label for="">Belandang</label>
                                 <select name="supplier_id" class="form-control select2 @error('supplier_id') parsley-error @enderror" id="">
                                     <option value="">Pilih Belandang</option>
                                     @foreach ($suppliers as $item)
-                                        <option {{$item->id == $supplier_id ? 'selected' : ''}} value="{{ $item->id }}">{{ $item->name }} / {{ $item->alias}}</option>
+                                        <option {{$item->id == $request->supplier_id ? 'selected' : ''}} value="{{ $item->id }}">{{ $item->name }} / {{ $item->alias}} {{$item->id}} {{$request->supplier_id}}</option>
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-4">
                                 <label for="">Tanggal</label>
-                                <input type="text" class="form-control fc-datepicker" placeholder="End Date" value="{{ $date == '' ? old('date') : $date }}" name="date">
+                                <div class="row no-gutters">
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control fc-datepicker" placeholder="Start Date" value="{{ $request->start_date == '' ? old('start_date') : $request->start_date }}" name="start_date">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control fc-datepicker" placeholder="End Date" value="{{ $request->end_date == '' ? old('end_date') : $request->end_date }}" name="end_date">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="">Mutu</label>
+                                <select name="category_id" class="form-control select2 @error('category_id') parsley-error @enderror" id="">
+                                    <option value="">Pilih Mutu</option>
+                                    @foreach ($category as $item)
+                                        <option {{$item->id == $request->category_id ? 'selected' : ''}} value="{{ $item->id }}">{{ $item->name }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                             <div class="form-group col-md-12 text-center">
                                 <input type="submit" class="btn btn-primary" value="Cari">
@@ -44,10 +60,10 @@
                         </div>
                     </form>
                     @if($supplier_id)
-                        <h4>INVOICE No. {{$date}}</h4>
+                        {{-- <h4>INVOICE No. {{$date}}</h4> --}}
                         <div class="row mt-4">
                             <div class="col-md-6">
-                                <h5>Tanggal Transaksi: {{ $date }}</h5>
+                                {{-- <h5>Tanggal Transaksi: {{ $date }}</h5> --}}
                             </div>
                             <div class="col-md-6 text-end">
                                 <h2>% AFKIRAN: {{ $reject_weight_presentase }}%</h2>
