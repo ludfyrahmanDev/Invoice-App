@@ -32,6 +32,7 @@
             <th style="border: 1px solid black ; font-weitght: bold;">Tanggal Peminjaman</th>
             <th style="border: 1px solid black ; font-weitght: bold;">Status Peminjaman</th>
             <th style="border: 1px solid black ; font-weitght: bold;">Jumlah Peminjaman</th>
+            <th style="border: 1px solid black ; font-weitght: bold;">Total Angsuran</th>
         </tr>
     </thead>
     <tbody>
@@ -41,6 +42,13 @@
             $totalUnpaid = 0;
         @endphp
         @foreach ($data->data as $idx => $item)
+        @php
+             $totalBayar = 0;
+            foreach ($item->angsuran as $itm) {
+                $totalBayar += $itm->total_payment;
+            }
+            $totalPaid += $totalBayar;
+        @endphp
             <tr>
                 <th width="50px"></th>
                 <td width="40px" style="border: 1px solid black ;">{{ intval($idx) + 1 }}</td>
@@ -50,32 +58,33 @@
                 <td style="border: 1px solid black ;">{{ Helper::tanggal($item->loaning_date) }}</td>
                 <td style="border: 1px solid black ;">{{ $item->status == 'paid' ? 'Paid' : 'Unpaid' }}</td>
                 <td style="border: 1px solid black ;text-align: right;">{{ Helper::price($item->quantity) }}</td>
+                <td style="border: 1px solid black ;text-align: right;">{{ Helper::price($totalBayar) }}</td>
             </tr>
             @php
-                if ($item->status == 'paid') {
-                    $totalPaid += $item->quantity;
-                }
-                if ($item->status == 'unpaid') {
-                    $totalUnpaid += $item->quantity;
-                }
+                // if ($item->status == 'paid') {
+                //     $totalPaid += $item->quantity;
+                // }
+                // if ($item->status == 'unpaid') {
+                //     $totalUnpaid += $item->quantity;
+                // }
                 $total += $item->quantity;
             @endphp
         @endforeach
         <tr>
             <th width="50px"></th>
-            <td style="border: 1px solid black ;" colspan="{{$data->type == 'all' ?4:3}}">Total Terbayar</td>
+            <td style="border: 1px solid black ;" colspan="{{$data->type == 'all' ?5:4}}">Total Terbayar</td>
             <td style="border: 1px solid black ;text-align: right;">
                 {{ Helper::price($totalPaid) }}</td>
         </tr>
         <tr>
             <th width="50px"></th>
-            <td style="border: 1px solid black ;" colspan="{{$data->type == 'all' ?4:3}}">Total Belum Terbayar</td>
+            <td style="border: 1px solid black ;" colspan="{{$data->type == 'all' ?5:4}}">Total Belum Terbayar</td>
             <td style="border: 1px solid black ;text-align: right;">
-                {{ Helper::price($totalUnpaid) }}</td>
+                {{ Helper::price($total - $totalPaid) }}</td>
         </tr>
         <tr>
             <th width="50px"></th>
-            <td style="border: 1px solid black ;" colspan="{{$data->type == 'all' ?4:3}}">Total Peminjaman</td>
+            <td style="border: 1px solid black ;" colspan="{{$data->type == 'all' ?5:4}}">Total Peminjaman</td>
             <td style="border: 1px solid black ;text-align: right;">{{ Helper::price($total) }}
             </td>
         </tr>

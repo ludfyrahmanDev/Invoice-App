@@ -96,8 +96,12 @@
                                     placeholder="supplier">
                                     <option value="">Pilih Supplier</option>
                                     @foreach ($dataSupplier as $item)
-                                        <option value="{{ $item->id }}">
-                                            {{ $item->name }}</option>
+                                        <option value="{{ $item->id }}" {{$request->supplier == $item->id ? 'selected' : ''}}>
+                                            {{ $item->name }}
+                                            @if ($item->alias)
+                                                ({{ $item->alias }})
+                                            @endif
+                                        </option>
                                     @endforeach
                                 </select>
 
@@ -108,7 +112,7 @@
                                 <label for="">Tanggal Peminjaman</label>
                                 <input type="text" id="start" name="start" placeholder="Tanggal Awal"
                                     onfocus="(this.type='date')" onblur="(this.type='text')"
-                                    class="form-control form-control-sm " placeholder="Start">
+                                    class="form-control form-control-sm " placeholder="Start" value="{{$request->start}}">
                             </div>
                         </div>
 
@@ -117,7 +121,7 @@
                                 <label for="" style="color: white !important;">Selesai</label>
                                 <input type="text" id="end" name="end" placeholder="Tanggal Akhir"
                                     onfocus="(this.type='date')" onblur="(this.type='text')"
-                                    class="form-control form-control-sm" placeholder="End">
+                                    class="form-control form-control-sm" placeholder="End"  value="{{$request->end}}">
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -289,5 +293,25 @@
             </div>
         </div>
     </div>
+    @push('script')
+    <script>
+        $('#filter-button').click(function() {
+            var supplier = $('#supplier').val();
+            var start = $('#start').val();
+            var end = $('#end').val();
+            var url = "{{ url('peminjaman') }}";
+            if (supplier) {
+                url += '?supplier=' + supplier;
+            }
+            if (start) {
+                url += '&start=' + start;
+            }
+            if (end) {
+                url += '&end=' + end;
+            }
+            window.location.href = url;
+        });
+    </script>
 
+    @endpush
 @endsection

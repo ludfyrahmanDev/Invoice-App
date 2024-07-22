@@ -33,7 +33,7 @@ class PeminjamanExport implements ShouldAutoSize,FromView
             $belandang = '';
             $list = Peminjaman::with('supplier');
 
-           
+
             if (!empty($this->belandang)) {
                 $list = $list->where('supplier_id', $this->belandang);
                 $title = 'Laporan Per Belandang';
