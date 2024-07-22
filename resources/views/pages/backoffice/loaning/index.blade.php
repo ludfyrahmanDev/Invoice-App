@@ -158,7 +158,7 @@
                                 @endphp
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $item->supplier->name }}</td>
+                                    <td>{{ $item->supplier->name }} @if($item->supplier->alias) / {{$item->supplier->alias}}  @endif</td>
                                     <td class="text-center">{{ Helper::price($item->quantity, 'Rp. ') }}</td>
                                     <td class="text-center">{{ Helper::price($totalBayar, 'Rp. ') }}</td>
                                     <td class="text-center">{{ Helper::tanggal($item->loaning_date) }}</td>
