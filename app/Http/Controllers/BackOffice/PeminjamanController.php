@@ -46,7 +46,7 @@ class PeminjamanController extends Controller
         ];
         $title = 'List Data Peminjaman';
         $dataSupplier = Supplier::all();
-        return view('pages.backoffice.loaning.index', compact('data', 'title', 'summary', 'dataSupplier'));
+        return view('pages.backoffice.loaning.index', compact('data', 'title', 'summary', 'dataSupplier', 'request'));
     }
 
     /**
