@@ -2,7 +2,6 @@
 
 @section('content-app')
     <div class="container mt-4">
-
         <div class="row">
             <div class="col-md-6 col-xm-12">
                 <div class="card overflow-hidden sales-card bg-primary-gradient">
@@ -13,7 +12,8 @@
                         <div class="pb-0 mt-0">
                             <div class="d-flex">
                                 <div class="">
-                                    <h4 class="tx-20 fw-bold mb-1 text-white">{{ $summary['paid']['count'] }} ({{Helper::price($summary['paid']['total'])}})</h4>
+                                    <h4 class="tx-20 fw-bold mb-1 text-white">{{ $summary['paid']['count'] }}
+                                        ({{ Helper::price($summary['paid']['total']) }})</h4>
 
                                 </div>
 
@@ -32,7 +32,8 @@
                         <div class="pb-0 mt-0">
                             <div class="d-flex">
                                 <div class="">
-                                    <h4 class="tx-20 fw-bold mb-1 text-white">{{ $summary['unpaid']['count'] }} ({{Helper::price($summary['unpaid']['total'])}})</h4>
+                                    <h4 class="tx-20 fw-bold mb-1 text-white">{{ $summary['unpaid']['count'] }}
+                                        ({{ Helper::price($summary['unpaid']['total']) }})</h4>
                                 </div>
 
                             </div>
@@ -96,7 +97,8 @@
                                     placeholder="supplier">
                                     <option value="">Pilih Supplier</option>
                                     @foreach ($dataSupplier as $item)
-                                        <option value="{{ $item->id }}" {{$request->supplier == $item->id ? 'selected' : ''}}>
+                                        <option value="{{ $item->id }}"
+                                            {{ $request->supplier == $item->id ? 'selected' : '' }}>
                                             {{ $item->name }}
                                             @if ($item->alias)
                                                 ({{ $item->alias }})
@@ -112,7 +114,8 @@
                                 <label for="">Tanggal Peminjaman</label>
                                 <input type="text" id="start" name="start" placeholder="Tanggal Awal"
                                     onfocus="(this.type='date')" onblur="(this.type='text')"
-                                    class="form-control form-control-sm " placeholder="Start" value="{{$request->start}}">
+                                    class="form-control form-control-sm " placeholder="Start"
+                                    value="{{ $request->start }}">
                             </div>
                         </div>
 
@@ -121,12 +124,12 @@
                                 <label for="" style="color: white !important;">Selesai</label>
                                 <input type="text" id="end" name="end" placeholder="Tanggal Akhir"
                                     onfocus="(this.type='date')" onblur="(this.type='text')"
-                                    class="form-control form-control-sm" placeholder="End"  value="{{$request->end}}">
+                                    class="form-control form-control-sm" placeholder="End" value="{{ $request->end }}">
                             </div>
                         </div>
                         <div class="col-md-2">
-                            <button class="btn btn-sm btn-success " style="margin-top: 30px !important;" id="filter-button"
-                                type="button"><i class="mdi mdi-filter"></i> Filter</button>
+                            <button class="btn btn-sm btn-success " style="margin-top: 30px !important;"
+                                id="filter-button" type="button"><i class="mdi mdi-filter"></i> Filter</button>
                             <button class="btn btn-sm btn-primary " style="margin-top: 30px !important;"
                                 type="submit"><i class="mdi mdi-file-export"></i> Export</button>
                         </div>
@@ -158,7 +161,10 @@
                                 @endphp
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $item->supplier->name }} @if($item->supplier->alias) / {{$item->supplier->alias}}  @endif</td>
+                                    <td>{{ $item->supplier->name }} @if ($item->supplier->alias)
+                                            / {{ $item->supplier->alias }}
+                                        @endif
+                                    </td>
                                     <td class="text-center">{{ Helper::price($item->quantity, 'Rp. ') }}</td>
                                     <td class="text-center">{{ Helper::price($totalBayar, 'Rp. ') }}</td>
                                     <td class="text-center">{{ Helper::tanggal($item->loaning_date) }}</td>
@@ -186,7 +192,7 @@
                                                 Bayar</button>
                                             <!-- Basic modal -->
                                             <div class="modal" id="paymentModal{{ $item->id }}">
-                                                <div class="modal-dialog" role="document">
+                                                <div class="modal-dialog modal-sm" role="document">
                                                     <form action="{{ url('/payment/' . $item->id) }}" method="post"
                                                         class="">
                                                         @csrf
@@ -210,6 +216,8 @@
                                                                                 </option>
                                                                                 <option value="Cash">Cash</option>
                                                                                 <option value="Transfer">Transfer</option>
+                                                                                <option value="Potong Nota">Potong Nota
+                                                                                </option>
 
                                                                             </select>
 
@@ -222,7 +230,7 @@
                                                                                     class="tx-danger">*</span></label>
                                                                             <input type="number" id="total_payment"
                                                                                 name="total_payment" class="form-control"
-                                                                                placeholder="Jumlah Pinjaman" required
+                                                                                placeholder="Jumlah Bayar" required
                                                                                 value="">
                                                                         </div>
                                                                     </div>
@@ -246,7 +254,7 @@
                                         <!-- Basic modal -->
                                         <!-- Scroll with content modal -->
                                         <div class="modal" id="paymentDetail{{ $item->id }}">
-                                            <div class="modal-dialog modal-dialog-scrollable" role="document">
+                                            <div class="modal-dialog modal-md modal-dialog-scrollable" role="document">
                                                 <div class="modal-content modal-content-demo">
                                                     <div class="modal-header">
                                                         <h6 class="modal-title">Detail Angsuran</h6><button
@@ -256,19 +264,117 @@
                                                     </div>
                                                     <div class="modal-body">
                                                         <div class="table-responsive">
-                                                            <table class="table table-striped table-bordered mg-b-0 text-md-nowrap">
+                                                            <table
+                                                                class="table table-striped table-bordered mg-b-0 text-md-nowrap">
                                                                 <thead>
                                                                     <th>Tanggal Pembayaran</th>
                                                                     <th>Jumlah Bayar</th>
                                                                     <th>Type Pembayaran</th>
+                                                                    <th>Aksi</th>
                                                                 </thead>
                                                                 <tbody>
                                                                     @foreach ($item->angsuran as $angs)
                                                                         <tr>
-                                                                            <td>{{Helper::tanggalWaktu($angs->created_at)}}</td>
-                                                                            <td>{{Helper::price($angs->total_payment)}}</td>
-                                                                            <td>{{$angs->type_payment}}</td>
+                                                                            <td>{{ Helper::tanggalWaktu($angs->created_at) }}
+                                                                            </td>
+                                                                            <td>{{ Helper::price($angs->total_payment) }}
+                                                                            </td>
+                                                                            <td>{{ $angs->type_payment }}</td>
+                                                                            <td>
+                                                                                <button type="button" 
+                                                                                    data-bs-target="#paymentEditModal{{ $angs->id }}" data-bs-toggle="modal"
+                                                                                    class="btn btn-sm btn-warning me-2"> <i class="mdi mdi-pencil"></i></button>
+                                                                            </td>
+
                                                                         </tr>
+                                                                        <div class="modal"
+                                                                            id="paymentEditModal{{ $angs->id }}">
+                                                                            <div class="modal-dialog modal-sm" role="document">
+                                                                                <form
+                                                                                    action="{{ url('/paymentUpdate/' . $angs->id) }}"
+                                                                                    method="post" class="">
+                                                                                    @csrf
+                                                                                    <div
+                                                                                        class="modal-content modal-content-demo">
+                                                                                        <div class="modal-header">
+                                                                                            <h6 class="modal-title">
+                                                                                                Pembayaran Pinjaman</h6>
+                                                                                            <button aria-label="Close"
+                                                                                                class="close"
+                                                                                                data-bs-dismiss="modal"
+                                                                                                type="button"><span
+                                                                                                    aria-hidden="true">&times;</span></button>
+                                                                                        </div>
+                                                                                        <div class="modal-body">
+                                                                                            <div class="row">
+                                                                                                <div class="col-md-12">
+                                                                                                    <div
+                                                                                                        class="form-group">
+                                                                                                        <label
+                                                                                                            for="">Tipe
+                                                                                                            Pembayaran <span
+                                                                                                                class="tx-danger">*</span></label>
+                                                                                                        <select
+                                                                                                            id="type_payment"
+                                                                                                            name="type_payment"
+                                                                                                            class="form-control "
+                                                                                                            required
+                                                                                                            placeholder="type_payment">
+                                                                                                            <option
+                                                                                                                value="">
+                                                                                                                Pilih
+                                                                                                                Pembayaran
+                                                                                                            </option>
+                                                                                                            <option
+                                                                                                                value="Cash" {{$angs->type_payment == 'Cash'?'selected':''}}>
+                                                                                                                Cash
+                                                                                                            </option>
+                                                                                                            <option
+                                                                                                                value="Transfer" {{$angs->type_payment == 'Transfer'?'selected':''}}>
+                                                                                                                Transfer
+                                                                                                            </option>
+                                                                                                            <option
+                                                                                                                value="Potong Nota" {{$angs->type_payment == 'Potong Nota'?'selected':''}}>
+                                                                                                                Potong Nota
+                                                                                                            </option>
+
+                                                                                                        </select>
+
+
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div class="col-md-12">
+                                                                                                    <div
+                                                                                                        class="form-group">
+                                                                                                        <label
+                                                                                                            for="">Jumlah
+                                                                                                            Bayar <span
+                                                                                                                class="tx-danger">*</span></label>
+                                                                                                        <input
+                                                                                                            type="number"
+                                                                                                            id="total_payment"
+                                                                                                            name="total_payment"
+                                                                                                            class="form-control"
+                                                                                                            placeholder="Jumlah Pinjaman"
+                                                                                                            required
+                                                                                                            value="{{$angs->total_payment}}">
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="modal-footer">
+                                                                                            <button
+                                                                                                class="btn ripple btn-secondary"
+                                                                                                data-bs-dismiss="modal"
+                                                                                                type="button">Batal</button>
+                                                                                            <button
+                                                                                                class="btn ripple btn-primary"
+                                                                                                type="submit">Simpan</button>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </form>
+                                                                            </div>
+                                                                        </div>
                                                                     @endforeach
                                                                 </tbody>
                                                             </table>
@@ -294,24 +400,23 @@
         </div>
     </div>
     @push('script')
-    <script>
-        $('#filter-button').click(function() {
-            var supplier = $('#supplier').val();
-            var start = $('#start').val();
-            var end = $('#end').val();
-            var url = "{{ url('peminjaman') }}";
-            if (supplier) {
-                url += '?supplier=' + supplier;
-            }
-            if (start) {
-                url += '&start=' + start;
-            }
-            if (end) {
-                url += '&end=' + end;
-            }
-            window.location.href = url;
-        });
-    </script>
-
+        <script>
+            $('#filter-button').click(function() {
+                var supplier = $('#supplier').val();
+                var start = $('#start').val();
+                var end = $('#end').val();
+                var url = "{{ url('peminjaman') }}";
+                if (supplier) {
+                    url += '?supplier=' + supplier;
+                }
+                if (start) {
+                    url += '&start=' + start;
+                }
+                if (end) {
+                    url += '&end=' + end;
+                }
+                window.location.href = url;
+            });
+        </script>
     @endpush
 @endsection

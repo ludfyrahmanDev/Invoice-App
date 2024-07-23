@@ -29,7 +29,7 @@ class PeminjamanController extends Controller
         if ($request->start && $request->end) {
             $query = $query->whereBetween('loaning_date', [$request->start, $request->end]);
         }
-        $data = $query->orderBy("id","desc")->get();
+        $data = $query->orderBy("id", "desc")->get();
         $summary = [
             'paid' => [
                 // make total key and value from total payment in relation angsuran in peminjaman
@@ -175,11 +175,11 @@ class PeminjamanController extends Controller
                 return redirect('peminjaman')->with('failed', 'Jumlah pembayaran melebihi jumlah pinjaman!');
             }
             PeminjamanDetail::create([
-                'peminjaman_id'=>$id,
-                'type_payment'=>$request->type_payment,
-                'total_payment'=>$request->total_payment,
-                'created_by'=>Auth::user()->id,
-                'updated_by'=>Auth::user()->id,
+                'peminjaman_id' => $id,
+                'type_payment' => $request->type_payment,
+                'total_payment' => $request->total_payment,
+                'created_by' => Auth::user()->id,
+                'updated_by' => Auth::user()->id,
             ]);
             if ($tmpTotal == $data->quantity) {
                 Peminjaman::where('id', $id)->update(['status' => 'paid', 'updated_by' => Auth::user()->id]);
@@ -190,6 +190,44 @@ class PeminjamanController extends Controller
         } catch (\Throwable $th) {
             DB::rollBack();
             return back()->with('failed', 'Gagal melakukan pembayaran!');
+        }
+    }
+
+    public function updatePaymentDetail(Request $request, $id)
+    {
+
+        try {
+            DB::beginTransaction();
+            $old = PeminjamanDetail::where('id', $id)->first();
+            $cek = PeminjamanDetail::where('peminjaman_id', $old->peminjaman_id)->sum('total_payment');
+            $tmpTotal =  ($cek - $old->total_payment) + $request->total_payment;
+           
+            $body = [
+                'type_payment' => $request->type_payment,
+                'total_payment' => $request->total_payment,
+                'updated_by' => Auth::user()->id,
+            ];
+            $data = Peminjaman::where('id', $old->peminjaman_id)->first();
+            
+            if ($tmpTotal > $data->quantity) {
+
+                return redirect('peminjaman')->with('failed', 'Jumlah pembayaran melebihi jumlah pinjaman!');
+            }
+            // return $tmpTotal;
+            PeminjamanDetail::where('id', $id)->update($body);
+            if ($tmpTotal == $data->quantity) {
+                
+                Peminjaman::where('id', $old->peminjaman_id)->update(['status' => 'paid', 'updated_by' => Auth::user()->id]);
+            }else{
+                Peminjaman::where('id', $old->peminjaman_id)->update(['status' => 'unpaid', 'updated_by' => Auth::user()->id]);
+            }
+
+            DB::commit();
+            return redirect('peminjaman')->with('success', 'Berhasil mengubah pembayaran!');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return $th;
+            return back()->with('failed', 'Gagal mengubah pembayaran!');
         }
     }
 
