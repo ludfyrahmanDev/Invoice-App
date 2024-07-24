@@ -39,6 +39,7 @@ Route::middleware(['auth',  'verified'])->group(function () {
     Route::get('purchaseallPrint', [PurchaseController::class, 'allPrint'])->name('purchase.allPrint');
     Route::get('purchaseReport', [PurchaseController::class, 'report'])->name('purchase.report');
     Route::post('payment/{id}', [PeminjamanController::class, 'approveTransaction']);
+    Route::post('paymentUpdate/{id}', [PeminjamanController::class, 'updatePaymentDetail']);
     Route::post('exportPeminjaman', [PeminjamanController::class, 'exportTransaction']);
     Route::resource('sub_category', SubCategoryController::class);
 
