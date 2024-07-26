@@ -30,7 +30,7 @@
                                 <select name="supplier_id" class="form-control select2 @error('supplier_id') parsley-error @enderror" id="">
                                     <option value="">Pilih Belandang</option>
                                     @foreach ($suppliers as $item)
-                                        <option {{$item->id == $request->supplier_id ? 'selected' : ''}} value="{{ $item->id }}">{{ $item->name }} / {{ $item->alias}} {{$item->id}} {{$request->supplier_id}}</option>
+                                        <option {{$item->id == $request->supplier_id ? 'selected' : ''}} value="{{ $item->id }}">{{ $item->name }} </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -81,7 +81,7 @@
                                     <tbody>
                                         <tr>
                                             <td>{{ $parentItem->invoice_date }}</td>
-                                            <td>{{ $parentItem->supplier->name }}</td>
+                                            <td>{{ $parentItem->supplier->name_alias }}</td>
                                             <td>{{ $parentItem->initial_weight }}</td>
                                             <td>{{ $parentItem->reject_weight }}</td>
                                             <td>{{ $parentItem->final_weight }}</td>

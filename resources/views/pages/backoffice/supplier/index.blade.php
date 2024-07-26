@@ -39,7 +39,7 @@
                             @foreach ($data as $item)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $item->name }} <br> @if($item->alias != '')({{$item->alias}}) @endif</td>
+                                    <td>{{ $item->name_alias }} </td>
                                     <td>{{ $item->address }}</td>
                                     <td>{{ $item->phone }}</td>
                                     <td>{{ $item->bank }} - {{ $item->account_number }}</td>
@@ -47,14 +47,13 @@
                                     <td class="d-flex">
                                         <a href="{{ route('supplier.edit', $item->id)}}" class="btn btn-sm btn-info me-2"> <i class="mdi mdi-pencil"></i>
                                             Ubah</a>
-                                        {{-- @if($item->subcategory->count() == 0) --}}
-                                            <form action="{{ route('supplier.destroy', $item->id) }}" method="POST" onclick="return confirm('apakah anda yakin ingin menghapus data ini??')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-danger"> <i class="mdi mdi-delete"></i>
-                                                    Hapus</button>
-                                            </form>
-                                        {{-- @endif --}}
+                                        <form action="{{ route('supplier.destroy', $item->id) }}" method="POST"
+                                            onclick="return confirm('apakah anda yakin ingin menghapus data ini??')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger"> <i class="mdi mdi-delete"></i>
+                                                Hapus</button>
+                                        </form>
 
                                     </td>
                                 </tr>

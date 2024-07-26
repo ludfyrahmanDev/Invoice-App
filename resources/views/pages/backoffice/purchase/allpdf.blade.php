@@ -82,7 +82,7 @@
                 <tbody>
                     <tr>
                         <td style="width: 20%">{{ $parentItem->invoice_date }}</td>
-                        <td style="width: 20%">{{ $parentItem->supplier->name.'/'.$parentItem->supplier->alias }}</td>
+                        <td style="width: 20%">{{ $parentItem->supplier->name_alias }}</td>
                         <td style="width: 20%">{{ $parentItem->initial_weight }}</td>
                         <td style="width: 20%">{{ $parentItem->reject_weight }}</td>
                         <td style="width: 20%">{{ $parentItem->final_weight }}</td>
@@ -153,7 +153,7 @@
         <div class="col-md-6 text-center right">
             <h5>Belandang</h5>
             <div style="height: 50px"></div>
-            <h5>{{$supplier->name}} / {{$supplier->alias != '' ? $supplier->alias : ''}}</h5>
+            <h5>{{$supplier->name_alias}} </h5>
         </div>
     </div>
 </body>

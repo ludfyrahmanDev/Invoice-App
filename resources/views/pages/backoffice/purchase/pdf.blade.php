@@ -70,7 +70,7 @@
                 <tbody>
                     <tr>
                         <td>{{ date('d-M-Y', strtotime($data->invoice_date)) }}</td>
-                        <td>{{ $data->supplier->name }}</td>
+                        <td>{{ $data->supplier->name_alias }}</td>
                         <td class="text-center">{{ $data->initial_weight }}</td>
                         <td class="text-center">{{ $data->reject_weight }}</td>
                         <td class="text-center">{{ $data->final_weight }}</td>
@@ -146,7 +146,7 @@
             <div class="col-md-6 text-center right">
                 <h5>Belandang</h5>
                 <div style="height: 30px"></div>
-                <h5>{{$data->supplier->name}} / {{$data->supplier->alias != '' ? $data->supplier->alias : ''}}</h5>
+                <h5>{{$data->supplier->name_alias}} </h5>
             </div>
         </div>
     </div>

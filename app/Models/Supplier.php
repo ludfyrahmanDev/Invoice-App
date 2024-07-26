@@ -19,7 +19,19 @@ class Supplier extends Model
         'pajak',
     ];
 
+    protected $appends = ['name_alias'];
 
+    // change name attribute to uppercase
+    public function getNameAliasAttribute($value)
+    {
+        $alias = $this->alias;
+        $result = $this->name;
+        if ($alias != null && $alias != '') {
+            $result = $result . ' (' . $alias . ')';
+        }
+        return $result;
+
+    }
     // relation to purchase
     public function purchase()
     {

@@ -100,9 +100,7 @@
                                         <option value="{{ $item->id }}"
                                             {{ $request->supplier == $item->id ? 'selected' : '' }}>
                                             {{ $item->name }}
-                                            @if ($item->alias)
-                                                ({{ $item->alias }})
-                                            @endif
+
                                         </option>
                                     @endforeach
                                 </select>
@@ -161,9 +159,7 @@
                                 @endphp
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $item->supplier->name }} @if ($item->supplier->alias)
-                                            / {{ $item->supplier->alias }}
-                                        @endif
+                                    <td>{{ $item->supplier->name_alias }}
                                     </td>
                                     <td class="text-center">{{ Helper::price($item->quantity, 'Rp. ') }}</td>
                                     <td class="text-center">{{ Helper::price($totalBayar, 'Rp. ') }}</td>
@@ -281,7 +277,7 @@
                                                                             </td>
                                                                             <td>{{ $angs->type_payment }}</td>
                                                                             <td>
-                                                                                <button type="button" 
+                                                                                <button type="button"
                                                                                     data-bs-target="#paymentEditModal{{ $angs->id }}" data-bs-toggle="modal"
                                                                                     class="btn btn-sm btn-warning me-2"> <i class="mdi mdi-pencil"></i></button>
                                                                             </td>

@@ -53,7 +53,7 @@
                 <th width="50px"></th>
                 <td width="40px" style="border: 1px solid black ;">{{ intval($idx) + 1 }}</td>
                 @if ($data->type == 'all')
-                    <td style="border: 1px solid black ;">{{ $item->supplier->name }} @if($item->supplier->alias) / {{$item->supplier->alias}}  @endif</td>
+                    <td style="border: 1px solid black ;">{{ $item->supplier->name_alias }}</td>
                 @endif
                 <td style="border: 1px solid black ;">{{ Helper::tanggal($item->loaning_date) }}</td>
                 <td style="border: 1px solid black ;">{{ $item->status == 'paid' ? 'Paid' : 'Unpaid' }}</td>

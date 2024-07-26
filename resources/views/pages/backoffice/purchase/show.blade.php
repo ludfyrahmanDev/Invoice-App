@@ -40,7 +40,7 @@
                                 <tbody>
                                     <tr>
                                         <td>{{ $data->invoice_date }}</td>
-                                        <td>{{ $data->supplier->name.'/'.$data->supplier->alias }}</td>
+                                        <td>{{ $data->supplier->name_alias}}</td>
                                         <td>{{ $data->initial_weight }}</td>
                                         <td>{{ $data->reject_weight }}</td>
                                         <td>{{ $data->final_weight }}</td>
@@ -115,7 +115,7 @@
                         <div class="col-md-6 text-center">
                             <h5>Belandang</h5>
                             <div style="height: 50px"></div>
-                            <h5>{{$data->supplier->name}} / {{$data->supplier->alias != '' ? $data->supplier->alias : ''}}</h5>
+                            <h5>{{$data->supplier->name_alias}} </h5>
                         </div>
                     </div>
                 </div>
