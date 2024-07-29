@@ -32,6 +32,7 @@
             <th style="border: 1px solid black ; font-weitght: bold;">Tanggal Peminjaman</th>
             <th style="border: 1px solid black ; font-weitght: bold;">Status Peminjaman</th>
             <th style="border: 1px solid black ; font-weitght: bold;">Jumlah Peminjaman</th>
+            <th style="border: 1px solid black ; font-weitght: bold;">Sisa Angsuran</th>
             <th style="border: 1px solid black ; font-weitght: bold;">Total Angsuran</th>
         </tr>
     </thead>
@@ -58,6 +59,7 @@
                 <td style="border: 1px solid black ;">{{ Helper::tanggal($item->loaning_date) }}</td>
                 <td style="border: 1px solid black ;">{{ $item->status == 'paid' ? 'Paid' : 'Unpaid' }}</td>
                 <td style="border: 1px solid black ;text-align: right;">{{ Helper::price($item->quantity) }}</td>
+                <td style="border: 1px solid black ;text-align: right;">{{ Helper::price(($item->quantity - $totalBayar)) }}</td>
                 <td style="border: 1px solid black ;text-align: right;">{{ Helper::price($totalBayar) }}</td>
             </tr>
             @php
@@ -72,19 +74,19 @@
         @endforeach
         <tr>
             <th width="50px"></th>
-            <td style="border: 1px solid black ;" colspan="{{$data->type == 'all' ?5:4}}">Total Terbayar</td>
+            <td style="border: 1px solid black ;" colspan="{{$data->type == 'all' ? 6:5}}">Total Terbayar</td>
             <td style="border: 1px solid black ;text-align: right;">
                 {{ Helper::price($totalPaid) }}</td>
         </tr>
         <tr>
             <th width="50px"></th>
-            <td style="border: 1px solid black ;" colspan="{{$data->type == 'all' ?5:4}}">Total Belum Terbayar</td>
+            <td style="border: 1px solid black ;" colspan="{{$data->type == 'all' ? 6:5}}">Total Belum Terbayar</td>
             <td style="border: 1px solid black ;text-align: right;">
                 {{ Helper::price($total - $totalPaid) }}</td>
         </tr>
         <tr>
             <th width="50px"></th>
-            <td style="border: 1px solid black ;" colspan="{{$data->type == 'all' ?5:4}}">Total Peminjaman</td>
+            <td style="border: 1px solid black ;" colspan="{{$data->type == 'all' ? 6:5}}">Total Peminjaman</td>
             <td style="border: 1px solid black ;text-align: right;">{{ Helper::price($total) }}
             </td>
         </tr>
