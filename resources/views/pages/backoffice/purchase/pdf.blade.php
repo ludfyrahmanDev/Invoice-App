@@ -121,12 +121,30 @@
                     @endforeach
                 </tbody>
                 <tfoot>
-                    <tr>
+                    <tr class="border">
                         <td><b>Total Keseluruhan</b></td>
                         <td><b>{{ $all_qty }}</b></td>
                         <td class="text-end"><b>{{ Helper::price($all_price) }}</b></td>
                         <td class="text-end"><b>{{ Helper::price($all_subtotal) }}</b></td>
                     </tr>
+                    @if ($data->tax > 0)
+                        @php
+                            $tax = $all_subtotal * $data->tax / 100;
+                            $total = $all_subtotal + $tax;
+                        @endphp
+                        <tr>
+                            <td><b>Pajak</b></td>
+                            <td></td>
+                            <td></td>
+                            <td class="text-end"><b>{{ Helper::price($tax)}}</b></td>
+                        </tr>
+                        <tr>
+                            <td><b>Total Keseluruhan + Pajak</b></td>
+                            <td></td>
+                            <td></td>
+                            <td class="text-end"><b>{{ Helper::price($total) }}</b></td>
+                        </tr>
+                    @endif
                 </tfoot>
             </table>
         </div>

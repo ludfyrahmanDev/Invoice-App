@@ -76,7 +76,7 @@
                                                 $all_subtotal += $childItem->subtotal;
                                             @endphp
                                             <tr>
-                                                <td class="text-center">{{ $childItem->subcategory->name }}</td>
+                                                <td class="text-center">{{ $childItem->subcategory?->name ?? '' }}</td>
                                                 <td>{{ $childItem->qty }}</td>
                                                 <td class="text-end">{{ Helper::price($childItem->price) }}</td>
                                                 <td class="text-end">{{ Helper::price($childItem->subtotal) }}</td>
@@ -97,6 +97,24 @@
                                         <td class="text-end"><h5>{{ Helper::price($all_price) }}</h5></td>
                                         <td class="text-end"><h5>{{ Helper::price($all_subtotal) }}</h5></td>
                                     </tr>
+                                    @if ($data->tax > 0)
+                                        @php
+                                            $tax = $all_subtotal * $data->tax / 100;
+                                            $total = $all_subtotal + $tax;
+                                        @endphp
+                                        <tr>
+                                            <td><h5>Pajak</h5></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td class="text-end"><h5>{{ Helper::price($tax)}}</h5></td>
+                                        </tr>
+                                        <tr>
+                                            <td><h5>Total Keseluruhan + Pajak</h5></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td class="text-end"><h5>{{ Helper::price($total) }}</h5></td>
+                                        </tr>
+                                    @endif
                                 </tfoot>
                             </table>
                         </div>

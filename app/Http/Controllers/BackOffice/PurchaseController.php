@@ -240,7 +240,7 @@ class PurchaseController extends Controller
         // group purchase detail with category
         $detail = [];
         foreach ($data->purchase_detail as $key => $purchase) {
-            $detail[$purchase->subcategory->category->name][] = $purchase;
+            $detail[$purchase->subcategory?->category?->name][] = $purchase;
         }
         $data->detail = $detail;
         $title = 'Detail Data Pembelian';

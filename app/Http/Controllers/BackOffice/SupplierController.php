@@ -19,7 +19,7 @@ class SupplierController extends Controller
     public function index()
     {
         //
-        $data = Supplier::all();
+        $data = Supplier::with('purchase')->get();
         $title = 'List Data Belandang';
         return view('pages.backoffice.supplier.index', compact('data', 'title'));
     }

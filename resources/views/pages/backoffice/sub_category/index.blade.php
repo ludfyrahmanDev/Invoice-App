@@ -42,6 +42,8 @@
                                     <td>{{ Helper::price($item->purchase_price) }}</td>
                                     <td class="d-flex"><a href="{{ route('sub_category.edit', $item->id)}}" class="btn btn-sm btn-info me-2"> <i class="mdi mdi-pencil"></i>
                                             Ubah</a>
+                                        @if ($item->purchaseDetails->count() == 0)
+
                                         <form method="POST" action="{{route('sub_category.destroy', $item->id)}}">
                                             @method('delete')
                                             @csrf
@@ -49,6 +51,7 @@
                                             Hapus
                                             </button>
                                         </form>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach

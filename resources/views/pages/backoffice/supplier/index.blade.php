@@ -47,13 +47,15 @@
                                     <td class="d-flex">
                                         <a href="{{ route('supplier.edit', $item->id)}}" class="btn btn-sm btn-info me-2"> <i class="mdi mdi-pencil"></i>
                                             Ubah</a>
-                                        <form action="{{ route('supplier.destroy', $item->id) }}" method="POST"
-                                            onclick="return confirm('apakah anda yakin ingin menghapus data ini??')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger"> <i class="mdi mdi-delete"></i>
-                                                Hapus</button>
-                                        </form>
+                                        @if ($item->purchase->count() == 0)
+                                            <form action="{{ route('supplier.destroy', $item->id) }}" method="POST"
+                                                onclick="return confirm('apakah anda yakin ingin menghapus data ini??')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-danger"> <i class="mdi mdi-delete"></i>
+                                                    Hapus</button>
+                                            </form>
+                                        @endif
 
                                     </td>
                                 </tr>

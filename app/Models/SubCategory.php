@@ -21,7 +21,9 @@ class SubCategory extends Model
     {
         return $this->belongsTo(Category::class);
     }
-    public function question(){
-        return $this->hasMany(Form::class);
+
+    public function purchaseDetails()
+    {
+        return $this->hasMany(PurchaseDetail::class, 'subcategory_id', 'id');
     }
 }
