@@ -242,8 +242,11 @@ class PeminjamanController extends Controller
             $belandang = $request->get('supplier');
             $start = $request->get('start');
             $end = $request->get('end');
-
-            return Excel::download(new PeminjamanExport($belandang, $start, $end, $request), 'Peminjaman-Export.xlsx');
+            $title = 'Laporan Keseluruhan';
+            if($request->type == 'recapt'){
+                $title = 'Laporan Rekapitulasi';
+            }
+            return Excel::download(new PeminjamanExport($belandang, $start, $end, $request), $title.'.xlsx');
         } catch (\Throwable $th) {
             throw $th;
         }

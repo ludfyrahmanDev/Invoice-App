@@ -73,7 +73,6 @@ class PeminjamanExport implements ShouldAutoSize,FromView
 
                     ];
                 });
-                // dd($list->toArray());
 
             }
             $data = (object) [
