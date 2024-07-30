@@ -125,11 +125,13 @@
                                     class="form-control form-control-sm" placeholder="End" value="{{ $request->end }}">
                             </div>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-4">
                             <button class="btn btn-sm btn-success " style="margin-top: 30px !important;"
                                 id="filter-button" type="button"><i class="mdi mdi-filter"></i> Filter</button>
                             <button class="btn btn-sm btn-primary " style="margin-top: 30px !important;"
-                                type="submit"><i class="mdi mdi-file-export"></i> Export</button>
+                                type="submit" name="type" value="all"><i class="mdi mdi-file-export"></i> Laporan Keseluruhan</button>
+                            <button class="btn btn-sm btn-primary " style="margin-top: 30px !important;"
+                                type="submit" name="type" value="recapt"><i class="mdi mdi-file-export"></i> Laporan Rekapitulasi</button>
                         </div>
                     </div>
                 </form>

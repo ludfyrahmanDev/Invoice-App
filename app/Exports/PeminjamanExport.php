@@ -18,12 +18,14 @@ class PeminjamanExport implements ShouldAutoSize,FromView
     protected $belandang;
     protected $start;
     protected $end;
+    protected $request;
 
-    public function __construct($belandang, $start, $end)
+    public function __construct($belandang, $start, $end, $request)
     {
         $this->belandang = $belandang;
         $this->start = $start;
         $this->end = $end;
+        $this->request = $request;
     }
     public function view(): View
     {
@@ -31,8 +33,7 @@ class PeminjamanExport implements ShouldAutoSize,FromView
             $title = 'Laporan Keseluruhan';
             $type = 'all';
             $belandang = '';
-            $list = Peminjaman::with('supplier');
-
+            $list = Peminjaman::with('supplier', 'angsuran');
 
             if (!empty($this->belandang)) {
                 $list = $list->where('supplier_id', $this->belandang);
@@ -49,13 +50,40 @@ class PeminjamanExport implements ShouldAutoSize,FromView
 
             $list = $list->get();
 
+            $view = 'layouts.export.excelTemplate';
+            if($this->request->type == 'recapt'){
+                $title = 'Laporan Rekapitulasi';
+                $view = 'layouts.export.loanRecapt';
+
+
+                // group by supplier id and sum quantity and angsuran->total_payment
+                $list = $list->groupBy('supplier_id')->map(function ($item) {
+                    return (object)[
+                        'supplier' => (object)[
+                            'name_alias' => $item[0]->supplier->name_alias
+                        ],
+                        'quantity' => $item->sum('quantity'),
+                        'total_payment' => $item->sum(function ($item) {
+                            return $item->angsuran->sum('total_payment');
+                        }),
+                        // unpaid
+                        'unpaid' => $item->sum(function ($item) {
+                            return $item->quantity - $item->angsuran->sum('total_payment');
+                        }),
+
+                    ];
+                });
+                // dd($list->toArray());
+
+            }
             $data = (object) [
                 'title' => $title,
                 'type' => $type,
                 'belandang' => $belandang,
                 'data' => $list
             ];
-            return view('layouts.export.excelTemplate', compact('data'));
+
+            return view($view, compact('data'));
         } catch (\Throwable $th) {
             throw $th;
         }

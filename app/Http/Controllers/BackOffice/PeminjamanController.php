@@ -201,14 +201,14 @@ class PeminjamanController extends Controller
             $old = PeminjamanDetail::where('id', $id)->first();
             $cek = PeminjamanDetail::where('peminjaman_id', $old->peminjaman_id)->sum('total_payment');
             $tmpTotal =  ($cek - $old->total_payment) + $request->total_payment;
-           
+
             $body = [
                 'type_payment' => $request->type_payment,
                 'total_payment' => $request->total_payment,
                 'updated_by' => Auth::user()->id,
             ];
             $data = Peminjaman::where('id', $old->peminjaman_id)->first();
-            
+
             if ($tmpTotal > $data->quantity) {
 
                 return redirect('peminjaman')->with('failed', 'Jumlah pembayaran melebihi jumlah pinjaman!');
@@ -216,7 +216,7 @@ class PeminjamanController extends Controller
             // return $tmpTotal;
             PeminjamanDetail::where('id', $id)->update($body);
             if ($tmpTotal == $data->quantity) {
-                
+
                 Peminjaman::where('id', $old->peminjaman_id)->update(['status' => 'paid', 'updated_by' => Auth::user()->id]);
             }else{
                 Peminjaman::where('id', $old->peminjaman_id)->update(['status' => 'unpaid', 'updated_by' => Auth::user()->id]);
@@ -241,7 +241,7 @@ class PeminjamanController extends Controller
             $start = $request->get('start');
             $end = $request->get('end');
 
-            return Excel::download(new PeminjamanExport($belandang, $start, $end), 'Peminjaman-Export.xlsx');
+            return Excel::download(new PeminjamanExport($belandang, $start, $end, $request), 'Peminjaman-Export.xlsx');
         } catch (\Throwable $th) {
             throw $th;
         }
