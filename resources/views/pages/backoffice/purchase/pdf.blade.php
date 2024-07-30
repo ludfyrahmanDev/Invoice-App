@@ -115,7 +115,7 @@
                         <tr class="border">
                             <td><b>Total {{$key}}</b></td>
                             <td ><b>{{$qty}}</b></td>
-                            <td class="text-end"><b>{{Helper::price($price)}}</b></td>
+                            <td class="text-end"><b>{{Helper::price($price / count($item))}}</b></td>
                             <td class="text-end"><b>{{Helper::price($subtotal)}}</b></td>
                         </tr>
                     @endforeach
@@ -124,7 +124,7 @@
                     <tr class="border">
                         <td><b>Total Keseluruhan</b></td>
                         <td><b>{{ $all_qty }}</b></td>
-                        <td class="text-end"><b>{{ Helper::price($all_price) }}</b></td>
+                        <td class="text-end"><b>{{ Helper::price($all_price/ count($data->detail)) }}</b></td>
                         <td class="text-end"><b>{{ Helper::price($all_subtotal) }}</b></td>
                     </tr>
                     @if ($data->tax > 0)
