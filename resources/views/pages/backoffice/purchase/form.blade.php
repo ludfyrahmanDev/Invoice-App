@@ -295,7 +295,7 @@
                                             @foreach ($parent as $index => $item)
                                                 <div class="tab-pane {{$index == 0 ? 'active' : ''}}" id="tab{{$index}}">
                                                     @foreach ($item->subcategory as $childItem)
-                                                        <button id="childItem" type="button" parent="{{$item->id}}" category-name="{{$childItem->name}}({{$item->name}})" price="{{$childItem->purchase_price}}" category-id="{{$childItem->id}}" class="btn btn-primary">{{$childItem->name}}</button>
+                                                        <button id="childItem" type="button" parent="{{$item->id}}" category-name="{{$childItem->name}}({{$item->name}})" price="{{$childItem->purchase_price}}" category-id="{{$childItem->id}}" class="btn mb-2 btn-primary">{{$childItem->name}}</button>
                                                     @endforeach
                                                 </div>
                                                 @endforeach

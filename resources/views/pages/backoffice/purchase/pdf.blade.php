@@ -38,7 +38,7 @@
         border-collapse: collapse;
     }
     body{
-        font-size: 12px;
+        font-size: 14px;
     }
     .left {
         float: left;
@@ -70,7 +70,7 @@
                 <tbody>
                     <tr>
                         <td>{{ date('d-M-Y', strtotime($data->invoice_date)) }}</td>
-                        <td>{{ $data->supplier->name_alias }}</td>
+                        <td>{{ $data->supplier?->name_alias }}</td>
                         <td class="text-center">{{ $data->initial_weight }}</td>
                         <td class="text-center">{{ $data->reject_weight }}</td>
                         <td class="text-center">{{ $data->final_weight }}</td>
@@ -106,7 +106,7 @@
                                 $all_subtotal += $childItem->subtotal;
                             @endphp
                             <tr>
-                                <td class="text-center">{{ $childItem->subcategory->name }}</td>
+                                <td class="text-center">{{ $childItem->subcategory?->name ?? '-' }}</td>
                                 <td>{{ $childItem->qty }}</td>
                                 <td class="text-end">{{ Helper::price($childItem->price) }}</td>
                                 <td class="text-end">{{ Helper::price($childItem->subtotal) }}</td>
