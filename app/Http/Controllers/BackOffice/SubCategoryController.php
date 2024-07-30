@@ -20,7 +20,7 @@ class SubCategoryController extends Controller
     public function index()
     {
         //
-        $data = SubCategory::with('category', 'purchaseDetails')->orderBy('category_id', 'desc')->get();
+        $data = SubCategory::with('category', 'purchaseDetails')->orderBy('category_id', 'asc')->get();
         $title = 'List Data Sub Kategori';
         return view('pages.backoffice.sub_category.index', compact('data', 'title'));
     }
