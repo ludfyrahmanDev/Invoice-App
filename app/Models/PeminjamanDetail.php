@@ -9,7 +9,7 @@ class PeminjamanDetail extends Model
 {
     use HasFactory;
     protected $table = "peminjaman_detail";
-    protected $fillable = ['peminjaman_id', 'type_payment', 'total_payment', 'created_by', 'updated_by'];
+    protected $fillable = ['peminjaman_id', 'type_payment', 'total_payment', 'description', 'created_by', 'updated_by'];
     public function creator()
     {
         return $this->belongsTo(User::class, "created_by", "id");

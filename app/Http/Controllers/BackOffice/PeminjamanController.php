@@ -178,6 +178,7 @@ class PeminjamanController extends Controller
                 'peminjaman_id' => $id,
                 'type_payment' => $request->type_payment,
                 'total_payment' => $request->total_payment,
+                'description' => $request->description,
                 'created_by' => Auth::user()->id,
                 'updated_by' => Auth::user()->id,
             ]);
@@ -205,6 +206,7 @@ class PeminjamanController extends Controller
             $body = [
                 'type_payment' => $request->type_payment,
                 'total_payment' => $request->total_payment,
+                'description' => $request->description,
                 'updated_by' => Auth::user()->id,
             ];
             $data = Peminjaman::where('id', $old->peminjaman_id)->first();

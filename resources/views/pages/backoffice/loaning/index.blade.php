@@ -232,6 +232,14 @@
                                                                                 value="">
                                                                         </div>
                                                                     </div>
+                                                                    <div class="col-md-12">
+                                                                        <div
+                                                                            class="form-group">
+                                                                            <label
+                                                                                for="">Deskripsi</label>
+                                                                            <textarea name="description" id="" class="form-control" cols="30" rows="5"></textarea>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                             <div class="modal-footer">
@@ -268,6 +276,7 @@
                                                                     <th>Tanggal Pembayaran</th>
                                                                     <th>Jumlah Bayar</th>
                                                                     <th>Type Pembayaran</th>
+                                                                    <th>Deskripsi</th>
                                                                     <th>Aksi</th>
                                                                 </thead>
                                                                 <tbody>
@@ -278,6 +287,7 @@
                                                                             <td>{{ Helper::price($angs->total_payment) }}
                                                                             </td>
                                                                             <td>{{ $angs->type_payment }}</td>
+                                                                            <td>{{$angs->description ?? '-'}}</td>
                                                                             <td>
                                                                                 <button type="button"
                                                                                     data-bs-target="#paymentEditModal{{ $angs->id }}" data-bs-toggle="modal"
@@ -358,6 +368,14 @@
                                                                                                             value="{{$angs->total_payment}}">
                                                                                                     </div>
                                                                                                 </div>
+                                                                                                <div class="col-md-12">
+                                                                                                    <div
+                                                                                                        class="form-group">
+                                                                                                        <label
+                                                                                                            for="">Deskripsi</label>
+                                                                                                        <textarea name="description" id="" class="form-control" cols="30" rows="5">{{$angs->description}}</textarea>
+                                                                                                    </div>
+                                                                                                </div>
                                                                                             </div>
                                                                                         </div>
                                                                                         <div class="modal-footer">
@@ -374,6 +392,11 @@
                                                                             </div>
                                                                         </div>
                                                                     @endforeach
+                                                                    @if($item->angsuran->count() == 0)
+                                                                        <tr>
+                                                                            <td colspan="5" class="text-center">Tidak ada data</td>
+                                                                        </tr>
+                                                                    @endif
                                                                 </tbody>
                                                             </table>
                                                         </div>
