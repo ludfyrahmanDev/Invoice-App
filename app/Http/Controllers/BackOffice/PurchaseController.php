@@ -41,6 +41,10 @@ class PurchaseController extends Controller
     {
         //
         $title = 'Tambah Data Pembelian';
+        $checkLatestPurchase = Purchase::latest()->first();
+        // get last number invoice_number
+        $invoice_number = $checkLatestPurchase->invoice_number;
+        dd($invoice_number);
         $invoice_number = date('Ymd').rand(1,10);
         // add rand number to invoice number
 
