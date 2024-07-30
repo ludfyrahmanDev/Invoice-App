@@ -62,13 +62,7 @@
                 <td style="border: 1px solid black ;text-align: right;">{{ Helper::price(($item->quantity - $totalBayar)) }}</td>
                 <td style="border: 1px solid black ;text-align: right;">{{ Helper::price($totalBayar) }}</td>
             </tr>
-            @phpa
-                // if ($item->status == 'paid') {
-                //     $totalPaid += $item->quantity;
-                // }
-                // if ($item->status == 'unpaid') {
-                //     $totalUnpaid += $item->quantity;
-                // }
+            @php
                 $total += $item->quantity;
             @endphp
         @endforeach
