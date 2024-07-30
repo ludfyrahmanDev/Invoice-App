@@ -28,7 +28,7 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="">Nama <span class="tx-danger">*</span> <input type="checkbox" name="employee" {{$data->parent_id != null ? 'checked' : ''}} id="employee"> Karyawan</label>
+                                    <label for="">Nama <span class="tx-danger">*</span> <input type="checkbox" name="employee" {{$data->parent_id != null ? 'checked' : ''}} id="employee"> Alias</label>
                                     <select name="parent_id" class="form-control {{$data->parent_id ? '' : 'd-none'}}" id="parent_id">
                                         <option value="">Pilih opsi</option>
                                         @foreach ($supplier as $item)
