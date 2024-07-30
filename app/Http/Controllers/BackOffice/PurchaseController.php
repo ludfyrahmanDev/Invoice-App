@@ -27,7 +27,7 @@ class PurchaseController extends Controller
     public function index()
     {
         //
-        $data = Purchase::with('supplier')->get();
+        $data = Purchase::with('supplier')->orderBy('created_at', 'desc')->get();
         $title = 'List Data Pembelian';
         return view('pages.backoffice.purchase.index', compact('data', 'title'));
     }
