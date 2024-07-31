@@ -48,6 +48,8 @@
     }
 </style>
 <body>
+    {{-- include header --}}
+    @include('pages.backoffice.purchase.header')
     <div class="row mt-4">
         <div class="col-md-6">
             <h4 class="text-start">INVOICE No. {{$data->invoice_number}}</h4>

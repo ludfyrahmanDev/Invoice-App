@@ -97,6 +97,10 @@ class PurchaseController extends Controller
         $reject_weight_presentase = '';
         $start_date = $request->start_date;
         $end_date = $request->end_date;
+        if($request->search){
+            $param = $request->toArray();
+            return redirect(route('purchase.allPrint', $param));
+        }
         if($request->supplier_id){
             $date = date('Ymd', strtotime($request->date));
             $list = Purchase::with('supplier', 'purchase_detail','purchase_detail.subcategory','purchase_detail.subcategory.category')
@@ -125,33 +129,102 @@ class PurchaseController extends Controller
 
 
     public function allPrint(Request $request){
-        $suppliers = Supplier::all();
-        $data = (object)[];
-        $date = '';
-        $reject_weight_presentase = '';
-        $filter_date = $request->date;
+        $request->start_date = str_replace('/', '-', $request->start_date);
+        $request['start_date'] = str_replace('/', '-', $request->start_date);
+        $request->end_date = str_replace('/', '-', $request->end_date);
+        $request['end_date'] = str_replace('/', '-', $request->end_date);
+        $title = 'Laporan Pembelian';
+        $view = 'pages.backoffice.purchase.allpdf';
+        $data = [];
+        if($request->report_type == 'mutu'){
+            $view = 'pages.backoffice.purchase.category';
+            $category = Category::with('subcategory', 'subcategory.purchaseDetails');
+            $list = (object)[];
+            $qty = 0;
+            if($request->category_id){
+                $category = $category->find($request->category_id);
+                // filter by start date and end date
+                if($request->start_date && $request->end_date){
+                    $category->subcategory = $category->subcategory->filter(function($item) use ($request){
+                        $item->qty = $item->purchaseDetails->whereBetween('created_at', [$request->start_date, $request->end_date])->sum('qty');
+                        return $item;
+                    });
+                }
+                // sum qty in purchase detail subcategory
+                $category->subcategory->map(function($item){
+                    $item->qty = $item->purchaseDetails->sum('qty');
+                    return $item;
+                });
+                $list = $category->subcategory;
+            }else{
+                // filter by start date and end date
+                if($request->start_date && $request->end_date){
+                    $category->whereHas('subcategory.purchaseDetails', function($query) use ($request){
+                        $query->whereBetween('created_at', [$request->start_date, $request->end_date]);
+                    });
+                }
+                $category = $category->get();
+                $list = [];
+                foreach ($category as $key => $item) {
+                    // $item->qty = $item->subcategory->sum('qty');
+                    foreach ($item->subcategory as $key => $sub) {
+                        $sub->qty = $sub->purchaseDetails->sum('qty');
+                        $list[] = $sub;
+                        $qty += $sub->qty;
+                    }
+                }
 
-        if($request->supplier_id){
-            $date = date('Ymd', strtotime($request->date));
-            $list = Purchase::with('supplier', 'purchase_detail','purchase_detail.subcategory','purchase_detail.subcategory.category')->where('supplier_id', $request->supplier_id)->where('invoice_number', 'like','%'.$date.'%')->get();
-            $data = [];
-            foreach ($list as $key => $item) {
+            }
+            $data = [
+                'data' => $list,
+                'category' => $category,
+                'qty' => $qty,
+            ];
 
+        }else{
+            $supplier_id = $request->supplier_id;
+            $supplier = Supplier::find($supplier_id);
+            $view = 'pages.backoffice.purchase.supplier';
+            $category = Purchase::with('supplier', 'purchase_detail','purchase_detail.subcategory','purchase_detail.subcategory.category');
+            if($request->start_date && $request->end_date){
+                $category->whereDate('invoice_date', '>=', $request->start_date)->whereDate('invoice_date', '<=', $request->end_date);
+            }
+            if($supplier_id){
+                $category->where('supplier_id', $supplier_id);
+            }
+            $category = $category->get();
+            $list = [];
+            foreach ($category as $key => $item) {
                 $detail = [];
                 foreach ($item->purchase_detail as $key => $purchase) {
-                    $detail[$purchase->subcategory->category->name][] = $purchase;
+                    // if exist replace qty and subtotal
+                    if(isset($list[$purchase->subcategory?->name])){
+                        $list[$purchase->subcategory?->name]->qty += $purchase->qty ?? 0;
+                        $list[$purchase->subcategory?->name]->subtotal += $purchase->subtotal ?? 0;
+                    }else{
+                        if($purchase->subcategory?->name != null || $purchase->subcategory?->name != ''){
+                            $list[$purchase->subcategory?->name] = (object)[
+                                'name' => $purchase->subcategory?->name,
+                                'qty' => $purchase->qty,
+                                'price' => $purchase->price,
+                                'subtotal' => $purchase->subtotal,
+                            ];
+                        }
+                    }
+                    array_filter($list);
+
                 }
-                $item->detail = $detail;
-                $data[] = $item;
+                // $list[] = $detail;
             }
-
-            $reject_weight_presentase = number_format(($list->sum('reject_weight') / ($list->sum('final_weight') == 0 ? 1 : $list->sum('final_weight')) * 100), 2);
+            $data = [
+                'data' => $list,
+                'supplier' => $supplier,
+                'qty' => array_sum(array_column($list, 'qty')) == 0 ? 1 : array_sum(array_column($list, 'qty')),
+                'subtotal' => array_sum(array_column($list, 'subtotal')),
+            ];
         }
-
-        $supplier_id = $request->supplier_id;
-        $supplier = Supplier::find($supplier_id);
-        $title = 'Laporan Pembelian';
-        $pdf = \PDF::loadView('pages.backoffice.purchase.allpdf', compact('data', 'title', 'suppliers','date','reject_weight_presentase', 'supplier_id', 'date','filter_date','supplier'));
+        $date = date('Ymd');
+        $pdf = \PDF::loadView($view, compact('data', 'title', 'supplier_id', 'supplier', 'request'));
         return $pdf->stream('invoice-'.$date.'.pdf');
     }
 
