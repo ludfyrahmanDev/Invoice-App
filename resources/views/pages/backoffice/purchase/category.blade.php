@@ -47,7 +47,7 @@
         <tfoot>
             <tr>
                 <td>Total</td>
-                <td>{{ $data['qty'] ?? $data['data']->sum('qty')}} Kg</td>
+                <td>{{ $data['qty'] != 0 ? $data['qty'] : $data['data']->sum('qty')}} Kg</td>
             </tr>
         </tfoot>
     </table>
