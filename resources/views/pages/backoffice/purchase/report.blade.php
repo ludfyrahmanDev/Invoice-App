@@ -85,16 +85,16 @@
                 let report_type = $(this).val();
                 if(report_type == 'supplier'){
                     // hide category
-                    $("#supplier_id").hide();
+                    $("#supplier_id").show();
                     // clear value select supplier_id
-                    $('select[name="supplier_id"]').val('');
-                    $('#category_id').show();
+                    $('select[name="category_id"]').val('');
+                    $('#category_id').hide();
 
                 }else{
-                    $('#supplier_id').show();
-                    $("#category_id").hide();
+                    $('#supplier_id').hide();
+                    $("#category_id").show();
                     // clear value select category_id
-                    $('select[name="category_id"]').val('');
+                    $('select[name="supplier_id"]').val('');
                 }
             });
         </script>

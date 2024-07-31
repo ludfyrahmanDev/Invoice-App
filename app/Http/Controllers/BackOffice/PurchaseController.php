@@ -136,6 +136,7 @@ class PurchaseController extends Controller
         $title = 'Laporan Pembelian';
         $view = 'pages.backoffice.purchase.allpdf';
         $data = [];
+        $supplier = null;
         if($request->report_type == 'mutu'){
             $view = 'pages.backoffice.purchase.category';
             $category = Category::with('subcategory', 'subcategory.purchaseDetails');
@@ -224,7 +225,7 @@ class PurchaseController extends Controller
             ];
         }
         $date = date('Ymd');
-        $pdf = \PDF::loadView($view, compact('data', 'title', 'supplier_id', 'supplier', 'request'));
+        $pdf = \PDF::loadView($view, compact('data', 'title', 'supplier', 'request'));
         return $pdf->stream('invoice-'.$date.'.pdf');
     }
 
