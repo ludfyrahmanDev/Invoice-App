@@ -431,7 +431,11 @@
                     url += '?supplier=' + supplier;
                 }
                 if (start) {
-                    url += '&start=' + start;
+                    if(supplier){
+                        url += '&start=' + start;
+                    }else{
+                        url += '?start=' + start;
+                    }
                 }
                 if (end) {
                     url += '&end=' + end;

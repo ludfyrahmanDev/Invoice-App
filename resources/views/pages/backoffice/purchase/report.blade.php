@@ -60,10 +60,10 @@
                                 <label for="">Tanggal</label>
                                 <div class="row no-gutters">
                                     <div class="col-md-6">
-                                        <input type="text" class="form-control fc-datepicker" placeholder="Start Date" value="{{ $request->start_date == '' ? old('start_date') : $request->start_date }}" name="start_date">
+                                        <input type="date" class="form-control" placeholder="Start Date" value="{{ $request->start_date == '' ? old('start_date') : $request->start_date }}" name="start_date">
                                     </div>
                                     <div class="col-md-6">
-                                        <input type="text" class="form-control fc-datepicker" placeholder="End Date" value="{{ $request->end_date == '' ? old('end_date') : $request->end_date }}" name="end_date">
+                                        <input type="date" class="form-control" placeholder="End Date" value="{{ $request->end_date == '' ? old('end_date') : $request->end_date }}" name="end_date">
                                     </div>
                                 </div>
                             </div>
