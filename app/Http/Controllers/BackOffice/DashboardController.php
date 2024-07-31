@@ -6,6 +6,9 @@ use App\Http\Controllers\BackOffice\Services\SummaryService;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use App\Models\Sale;
+use App\Models\Peminjaman;
+use App\Models\Purchase;
+use App\Models\PeminjamanDetail;
 use Illuminate\Http\Request;
 
 use Auth;
@@ -25,14 +28,27 @@ class DashboardController extends Controller
     public function index(Request $request)
     {
         //
-        $summary = (object)[
-            'purchase' => 'Rp. 0',
-            'purchase_not_paid' => 'Rp. 0',
-            'purchase_weight' => 'Rp. 0',
-            'week' => 'Rp. 0',
-            'month' => 'Rp. 0',
-            'year' => 'Rp. 0',
-            'chart' => []
+
+        $summary = [
+            'paid' => [
+                // make total key and value from total payment in relation angsuran in peminjaman
+                'total' => PeminjamanDetail::sum('total_payment'),
+                'count' => Peminjaman::where('status', 'paid')->count()
+            ],
+            'unpaid' => [
+                'total' => Peminjaman::with('angsuran')->where('status', 'unpaid')->get()->sum(function ($item) {
+                    $total = $item->quantity - $item->angsuran->sum('total_payment');
+                    return $total;
+                }),
+                'count' => Peminjaman::where('status', 'unpaid')->count()
+            ],
+            'purchase' => [
+                'today' => Purchase::whereDate('created_at', date('Y-m-d'))->sum('subtotal'),
+                'month' => Purchase::whereMonth('created_at', date('m'))->sum('subtotal'),
+                'year' => Purchase::whereYear('created_at', date('Y'))->sum('subtotal')
+            ]
+            // sum purchase by today
+
         ];
         $customers = [];
         return view('pages.backoffice.dashboard.index', compact('summary', 'customers'));
