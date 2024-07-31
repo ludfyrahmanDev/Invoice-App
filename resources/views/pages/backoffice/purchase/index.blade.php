@@ -40,7 +40,7 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $item->invoice_number }}</td>
-                                    <td>{{ $item->supplier->name }}</td>
+                                    <td>{{ $item->supplier->name_alias }}</td>
                                     <td>{{ $item->initial_weight }} KG</td>
                                     <td>{{ $item->reject_weight }} KG</td>
                                     <td>{{ $item->final_weight }} KG</td>

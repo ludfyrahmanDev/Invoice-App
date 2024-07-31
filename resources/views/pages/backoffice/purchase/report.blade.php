@@ -52,7 +52,7 @@
                                 <select name="supplier_id" class="form-control select2 @error('supplier_id') parsley-error @enderror" id="">
                                     <option value="">Pilih Belandang</option>
                                     @foreach ($suppliers as $item)
-                                        <option {{$item->id == $request->supplier_id ? 'selected' : ''}} value="{{ $item->id }}">{{ $item->name }} </option>
+                                        <option {{$item->id == $request->supplier_id ? 'selected' : ''}} value="{{ $item->id }}">{{ $item->name_alias }} </option>
                                     @endforeach
                                 </select>
                             </div>
