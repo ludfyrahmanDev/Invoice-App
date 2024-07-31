@@ -54,7 +54,7 @@
 <body>
     @include('pages.backoffice.purchase.header')
     <div class="col-md-6">
-        <h3>Lap Pembelian: {{ $request->supplier_id ? $supplier->name_alias : 'Seluruh Belandang' }}</h3>
+        <h3>Lap Pembelian: {{ $request->supplier_id ? $supplier->name_alias : ($request->head_supplier_id ? 'Laporan Belandang:'.$supplier->name_alias: 'Seluruh Belandang') }}</h3>
     </div>
     <div class="col-md-6 text-end right" style="margin-top:-70px">
         <h5>Tanggal: {{ date('d-M-Y') }}</h5>

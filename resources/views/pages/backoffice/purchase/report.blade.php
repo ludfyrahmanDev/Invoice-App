@@ -33,6 +33,7 @@
                                         $report_type = $request->report_type;
                                     @endphp
                                     <option value="">Pilih Jenis Laporan</option>
+                                    <option value="head_supplier" {{'head_supplier' == $request->report_type ? 'selected' : ''}}>Kepala Belandang</option>
                                     <option value="supplier" {{'supplier' == $request->report_type ? 'selected' : ''}}>Belandang</option>
                                     <option value="mutu" {{'mutu' == $request->report_type ? 'selected' : ''}}>Mutu</option>
                                 </select>
@@ -46,7 +47,15 @@
                                     @endforeach
                                 </select>
                             </div>
-
+                            <div class="form-group col-md-4" id="head_supplier_id">
+                                <label for="">Kepala Belandang</label>
+                                <select name="head_supplier_id" class="form-control select2 @error('head_supplier_id') parsley-error @enderror" id="">
+                                    <option value="">Pilih Belandang</option>
+                                    @foreach ($head_supplier as $item)
+                                        <option {{$item->id == $request->head_supplier_id ? 'selected' : ''}} value="{{ $item->id }}">{{ $item->name_alias }} </option>
+                                    @endforeach
+                                </select>
+                            </div>
                             <div class="form-group col-md-4" id="supplier_id">
                                 <label for="">Belandang</label>
                                 <select name="supplier_id" class="form-control select2 @error('supplier_id') parsley-error @enderror" id="">
@@ -70,6 +79,7 @@
 
                             <div class="form-group col-md-12 text-center">
                                 <input type="submit" name="search" class="btn btn-primary" value="Cari">
+                                <input type="reset" name="search" class="btn btn-secondary" value="Reset" onclick="window.location.reload()">
                             </div>
                         </div>
                     </form>
@@ -80,21 +90,29 @@
     @push('script')
         <script>
             $("#supplier_id").hide();
+            $("#category_id").hide();
             // on change report type
             $('select[name="report_type"]').on('change', function(){
                 let report_type = $(this).val();
                 if(report_type == 'supplier'){
                     // hide category
                     $("#supplier_id").show();
-                    // clear value select supplier_id
                     $('select[name="category_id"]').val('');
+                    $('select[name="head_supplier_id"]').val('');
                     $('#category_id').hide();
+                    $('#head_supplier_id').hide();
 
-                }else{
+                }else if(report_type == 'mutu'){
                     $('#supplier_id').hide();
+                    $('#head_supplier_id').hide();
                     $("#category_id").show();
                     // clear value select category_id
                     $('select[name="supplier_id"]').val('');
+                    $('select[name="head_supplier_id"]').val('');
+                }else{
+                    $('#head_supplier_id').show();
+                    $('#supplier_id').hide();
+                    $('#category_id').hide();
                 }
             });
         </script>

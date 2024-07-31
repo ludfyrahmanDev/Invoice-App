@@ -92,6 +92,7 @@ class PurchaseController extends Controller
 
     public function report(Request $request){
         $suppliers = Supplier::all();
+        $head_supplier = Supplier::where('parent_id', null)->get();
         $data = (object)[];
         $start_date = '';
         $reject_weight_presentase = '';
@@ -124,7 +125,7 @@ class PurchaseController extends Controller
         $supplier_id = $request->supplier_id;
 
         $title = 'Laporan Data Pembelian';
-        return view('pages.backoffice.purchase.report', compact('data', 'title', 'suppliers','reject_weight_presentase', 'supplier_id', 'request', 'category'));
+        return view('pages.backoffice.purchase.report', compact('data', 'head_supplier','title', 'suppliers','reject_weight_presentase', 'supplier_id', 'request', 'category'));
     }
 
 
@@ -184,6 +185,7 @@ class PurchaseController extends Controller
 
         }else{
             $supplier_id = $request->supplier_id;
+            $head_supplier_id = $request->head_supplier_id;
             $supplier = Supplier::find($supplier_id);
             $view = 'pages.backoffice.purchase.supplier';
             $category = Purchase::with('supplier', 'purchase_detail','purchase_detail.subcategory','purchase_detail.subcategory.category');
@@ -192,6 +194,13 @@ class PurchaseController extends Controller
             }
             if($supplier_id){
                 $category->where('supplier_id', $supplier_id);
+            }
+            if($head_supplier_id){
+                $supplier = Supplier::find($head_supplier_id);
+                $category->whereHas('supplier', function($query) use ($head_supplier_id){
+                    $query->where('parent_id', $head_supplier_id);
+                })
+                ->orWhere('supplier_id', $head_supplier_id);
             }
             $category = $category->get();
             $list = [];
