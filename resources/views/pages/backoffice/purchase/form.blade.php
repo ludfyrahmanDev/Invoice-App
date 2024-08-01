@@ -435,9 +435,27 @@
             $(this).closest('tr').find('#subtotal-input').val(subtotal);
             $(this).closest('tr').find('.subtotal').text(formatRupiah(subtotal));
         });
-        $('#formid').on('keyup keypress', function(e) {
+        // on enter if in #qty
+        $(document).on('keyup','#qty',function(e){
+            if(e.keyCode == 13){
+                var qty = $(this).val();
+                var price = $(this).closest('tr').find('#price').val();
+                var subtotal = qty * price;
+                console.log(subtotal, qty, price);
+                $(this).closest('tr').find('#subtotal-input').val(subtotal);
+                $(this).closest('tr').find('.subtotal').text(formatRupiah(subtotal));
+            }
+        });
+        $('#formid').on('keydown keypress', function(e) {
             var keyCode = e.keyCode || e.which;
             if (keyCode === 13) {
+                // if enter move to another #qty input
+                if(e.target.id == 'qty'){
+                    // move to 1 next input #qty
+                    var index = $('input[name="qty[]"]').index(e.target);
+                    $('input[name="qty[]"]').eq(index+1).focus();
+
+                }
                 e.preventDefault();
                 return false;
             }
