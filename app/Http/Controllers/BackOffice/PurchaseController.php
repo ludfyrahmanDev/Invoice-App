@@ -81,6 +81,7 @@ class PurchaseController extends Controller
         $data = Purchase::with('supplier', 'purchase_detail','purchase_detail.subcategory','purchase_detail.subcategory.category')->find($id);
         // group purchase detail with category
         $detail = [];
+        $data->purchase_detail = $data->purchase_detail->sortBy('subcategory_id');
         foreach ($data->purchase_detail as $key => $purchase) {
             $detail[$purchase->subcategory?->category?->name][] = $purchase;
         }
@@ -111,6 +112,7 @@ class PurchaseController extends Controller
             foreach ($list as $key => $item) {
 
                 $detail = [];
+                $item->purchase_detail = $item->purchase_detail->sortBy('subcategory_id');
                 foreach ($item->purchase_detail as $key => $purchase) {
                     $detail[$purchase->subcategory->category->name][] = $purchase;
                 }
@@ -206,6 +208,7 @@ class PurchaseController extends Controller
             $list = [];
             foreach ($category as $key => $item) {
                 $detail = [];
+                $item->purchase_detail = $item->purchase_detail->sortBy('subcategory_id');
                 foreach ($item->purchase_detail as $key => $purchase) {
                     // if exist replace qty and subtotal
                     if(isset($list[$purchase->subcategory?->name])){
@@ -323,8 +326,11 @@ class PurchaseController extends Controller
      */
     public function show($id)
     {
-        $data = Purchase::with('supplier', 'purchase_detail','purchase_detail.subcategory','purchase_detail.subcategory.category')->find($id);
+        $data = Purchase::with('supplier', 'purchase_detail','purchase_detail.subcategory','purchase_detail.subcategory.category')
+        ->find($id);
         // group purchase detail with category
+        // order by subcategory id
+        $data->purchase_detail = $data->purchase_detail->sortBy('subcategory_id');
         $detail = [];
         foreach ($data->purchase_detail as $key => $purchase) {
             $detail[$purchase->subcategory?->category?->name][] = $purchase;
