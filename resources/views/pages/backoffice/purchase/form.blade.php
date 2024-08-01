@@ -86,7 +86,7 @@
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label for="" class="d-none">Keterangan </label>
-                                                <input type="text" value="{{ $data->description == '' ? old('description') : $data->description }}" class="form-control @error('description') parsley-error @enderror" placeholder="Keterangan">
+                                                <input type="text" name="description" value="{{ $data->description == '' ? old('description') : $data->description }}" class="form-control @error('description') parsley-error @enderror" placeholder="Keterangan">
                                             @error('description')
                                                 <ul class="parsley-errors-list filled" id="parsley-id-5">
                                                     <li class="parsley-required">{{ $message }}</li>
@@ -162,70 +162,6 @@
                                             @enderror
                                         </div>
                                     </div>
-                                   <div class="d-none">
-                                    <div class="col-md-12">
-                                        <h4>Detail Informasi Barang</h4>
-                                       </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="" class="d-none">Jenis Barang <span class="tx-danger">*</span></label>
-                                                <select name="category_id" class="form-control select2 @error('category_id') parsley-error @enderror" id="item">
-                                                    <option value="">Pilih Jenis</option>
-                                                    @foreach ($categories as $category)
-                                                        <option {{$category->id == $data->category_id ? 'selected' : ''}} data-price='{{$category->purchase_price}}' value="{{ $category->id }}">{{ $category->name }}({{$category->category->name}})</option>
-                                                    @endforeach
-                                                </select>
-                                                @error('category_id')
-                                                    <ul class="parsley-errors-list filled" id="parsley-id-5">
-                                                        <li class="parsley-required">{{ $message }}</li>
-                                                    </ul>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="" class="d-none">QTY <span class="tx-danger">*</span></label>
-                                                <div class="input-group">
-                                                    <input value="{{ $data->qty == '' ? old('qty') : $data->qty }}" class="form-control @error('qty') parsley-error @enderror" name='qty' placeholder="QTY" type="number" min="1">
-                                                    <div class="input-group-text">
-                                                        <div class="input-group-text">
-                                                            KG
-                                                        </div>
-                                                    </div><!-- input-group-text -->
-                                                </div>
-                                                @error('qty')
-                                                    <ul class="parsley-errors-list filled" id="parsley-id-5">
-                                                        <li class="parsley-required">{{ $message }}</li>
-                                                    </ul>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="" class="d-none">Harga Beli <span class="tx-danger">*</span></label>
-                                                <div class="input-group">
-                                                    <div class="input-group-text">
-                                                        <div class="input-group-text">
-                                                            Rp
-                                                        </div>
-                                                    </div><!-- input-group-text -->
-                                                    <input value="{{ $data->selling_price == '' ? old('selling_price') : $data->selling_price }}" class="form-control @error('selling_price') parsley-error @enderror" name='selling_price' placeholder="Harga Beli" type="number">
-
-                                                </div>
-                                                @error('selling_price')
-                                                    <ul class="parsley-errors-list filled" id="parsley-id-5">
-                                                        <li class="parsley-required">{{ $message }}</li>
-                                                    </ul>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12 d-none">
-                                            <h4>Total: <b id="subtotal"></b></h4>
-                                        </div>
-                                        <div class="col-md-12 text-end d-none">
-                                            <button type="button" id='addItem' class="btn btn-primary mb-4">Tambahkan</button>
-                                        </div>
-                                   </div>
                                     <div class="col-md-12">
                                         <table class="table product-item">
                                            <thead>
