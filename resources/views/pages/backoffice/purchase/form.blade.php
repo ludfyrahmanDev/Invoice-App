@@ -295,7 +295,7 @@
                                             @foreach ($parent as $index => $item)
                                                 <div class="tab-pane {{$index == 0 ? 'active' : ''}}" id="tab{{$index}}">
                                                     @foreach ($item->subcategory as $childItem)
-                                                        <button id="childItem" type="button" parent="{{$item->id}}" category-name="{{$childItem->name}}({{$item->name}})" price="{{$childItem->purchase_price}}" category-id="{{$childItem->id}}" class="btn mb-2 btn-primary">{{$childItem->name}}</button>
+                                                        <button id="childItem" type="button" parent="{{$item->id}}" category-name="{{$childItem->name}}({{$item->name}})" price="{{$childItem->purchase_price}}" category-id="{{$childItem->id}}" class="btn mb-2 {{$childItem->purchase_price == 0 ? 'btn-secondary' : 'btn-primary'}}">{{$childItem->name}}</button>
                                                     @endforeach
                                                 </div>
                                                 @endforeach
@@ -380,6 +380,11 @@
                 var id = $(this).attr('category-id');
                 var parent = $(this).attr('parent');
                 var item_value = id;
+                var price = $(this).attr('price');
+                if(price == 0){
+                    alert('Harga barang tidak boleh 0');
+                    return;
+                }
                 // check if same item already added
                 var exists = false;
                 $('.product-item tbody tr').each(function(){
