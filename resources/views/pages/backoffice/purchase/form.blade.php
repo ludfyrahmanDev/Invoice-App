@@ -125,7 +125,7 @@
                                                         <b id="reject_weight_presentase">0%</b>
                                                     </div>
                                                 </div><!-- input-group-text -->
-                                                <input type="number" min="1" id="reject_weight" name="reject_weight"
+                                                <input type="number" min="0" id="reject_weight" name="reject_weight"
                                                 class="form-control @error('reject_weight') parsley-error @enderror" placeholder="Berat Afkir"
                                                 value="{{ $data->reject_weight == '' ? old('reject_weight') : $data->reject_weight }}">
                                                 <div class="input-group-text">

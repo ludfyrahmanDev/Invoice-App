@@ -81,7 +81,7 @@ class PurchaseController extends Controller
         $data = Purchase::with('supplier', 'purchase_detail','purchase_detail.subcategory','purchase_detail.subcategory.category')->find($id);
         // group purchase detail with category
         $detail = [];
-        $data->purchase_detail = $data->purchase_detail->sortBy('subcategory_id');
+        // $data->purchase_detail = $data->purchase_detail->sortBy('subcategory_id');
         foreach ($data->purchase_detail as $key => $purchase) {
             $detail[$purchase->subcategory?->category?->name][] = $purchase;
         }
@@ -330,7 +330,7 @@ class PurchaseController extends Controller
         ->find($id);
         // group purchase detail with category
         // order by subcategory id
-        $data->purchase_detail = $data->purchase_detail->sortBy('subcategory_id');
+        // $data->purchase_detail = $data->purchase_detail->sortBy('subcategory_id');
         $detail = [];
         foreach ($data->purchase_detail as $key => $purchase) {
             $detail[$purchase->subcategory?->category?->name][] = $purchase;

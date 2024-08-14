@@ -33,10 +33,10 @@
                                         class="form-control @error('supplier') parsley-error @enderror" placeholder="supplier">
                                         <option value="">Pilih Supplier</option>
                                         @foreach ($data->dataSupplier as $item)
-                                            <option value="{{$item->id}}" {{ $data->type == 'edit' && $data->supplier == $item->id? 'selected' :'' }}>{{$item->name}}</option>
+                                            <option value="{{$item->id}}" {{ $data->type == 'edit' && $data->supplier == $item->id? 'selected' :'' }}>{{$item->name_alias}}</option>
                                         @endforeach
                                     </select>
-                                   
+
                                     @error('supplier')
                                         <ul class="parsley-errors-list filled" id="parsley-id-5">
                                             <li class="parsley-required">{{ $message }}</li>
@@ -44,7 +44,7 @@
                                     @enderror
                                 </div>
                             </div>
-                           
+
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="">Jumlah<span class="tx-danger">*</span></label>
@@ -71,7 +71,7 @@
                                     @enderror
                                 </div>
                             </div>
-                           
+
                         </div>
                         @if($data->type == 'detail')
                         <div class="table-responsive">
