@@ -211,13 +211,15 @@ class PurchaseController extends Controller
                 $item->purchase_detail = $item->purchase_detail->sortBy('subcategory_id');
                 foreach ($item->purchase_detail as $key => $purchase) {
                     // if exist replace qty and subtotal
-                    if(isset($list[$purchase->subcategory?->name])){
-                        $list[$purchase->subcategory?->name]->qty += $purchase->qty ?? 0;
-                        $list[$purchase->subcategory?->name]->subtotal += $purchase->subtotal ?? 0;
+                    if(isset($list[$purchase->subcategory?->id])){
+                        $list[$purchase->subcategory?->id]->qty += $purchase->qty ?? 0;
+                        $list[$purchase->subcategory?->id]->subtotal += $purchase->subtotal ?? 0;
                     }else{
                         if($purchase->subcategory?->name != null || $purchase->subcategory?->name != ''){
-                            $list[$purchase->subcategory?->name] = (object)[
+                            $list[$purchase->subcategory?->id] = (object)[
                                 'name' => $purchase->subcategory?->name,
+                                'id' => $purchase->subcategory?->id,
+                                'category_id' => $purchase->subcategory?->category_id,
                                 'qty' => $purchase->qty,
                                 'price' => $purchase->price,
                                 'subtotal' => $purchase->subtotal,
@@ -229,6 +231,12 @@ class PurchaseController extends Controller
                 }
                 // $list[] = $detail;
             }
+            ksort($list);
+            // list
+            $list = collect($list)->values()->all();
+            // order by category id asc
+            $list = collect($list)->sortBy('category_id')->values()->all();
+
             $data = [
                 'data' => $list,
                 'supplier' => $supplier,
