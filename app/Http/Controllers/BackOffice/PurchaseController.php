@@ -83,9 +83,18 @@ class PurchaseController extends Controller
         $detail = [];
         // $data->purchase_detail = $data->purchase_detail->sortBy('subcategory_id');
         foreach ($data->purchase_detail as $key => $purchase) {
-            $detail[$purchase->subcategory?->category?->name][] = $purchase;
+            $detail[$purchase->subcategory?->category?->id][] = $purchase;
         }
-        $data->detail = $detail;
+        // sort $detail key asc
+        ksort($detail);
+        // change key to value
+        $detailChange = [];
+        foreach ($detail as $key => $value) {
+            $model = Category::find($key);
+            $detailChange[$model->name] = $value;
+        }
+
+        $data->detail = $detailChange;
         $title = 'Detail Data Pembelian';
         $pdf = \PDF::loadView('pages.backoffice.purchase.pdf', compact('data', 'title'));
         return $pdf->stream('invoice-'.$data->invoice_number.'.pdf');
@@ -337,13 +346,22 @@ class PurchaseController extends Controller
         $data = Purchase::with('supplier', 'purchase_detail','purchase_detail.subcategory','purchase_detail.subcategory.category')
         ->find($id);
         // group purchase detail with category
-        // order by subcategory id
-        // $data->purchase_detail = $data->purchase_detail->sortBy('subcategory_id');
+        // order by category
+
         $detail = [];
         foreach ($data->purchase_detail as $key => $purchase) {
-            $detail[$purchase->subcategory?->category?->name][] = $purchase;
+            $detail[$purchase->subcategory?->category?->id][] = $purchase;
         }
-        $data->detail = $detail;
+        // sort $detail key asc
+        ksort($detail);
+        // change key to value
+        $detailChange = [];
+        foreach ($detail as $key => $value) {
+            $model = Category::find($key);
+            $detailChange[$model->name] = $value;
+        }
+
+        $data->detail = $detailChange;
         $title = 'Detail Data Pembelian';
         return view('pages.backoffice.purchase.show', compact('data', 'title'));
     }
