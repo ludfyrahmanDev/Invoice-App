@@ -43,9 +43,24 @@ class DashboardController extends Controller
                 'count' => Peminjaman::where('status', 'unpaid')->count()
             ],
             'purchase' => [
-                'today' => Purchase::whereDate('created_at', date('Y-m-d'))->sum('subtotal'),
-                'month' => Purchase::whereMonth('created_at', date('m'))->sum('subtotal'),
-                'year' => Purchase::whereYear('created_at', date('Y'))->sum('subtotal')
+                'today' => [
+                    'value' => Purchase::whereDate('created_at', date('Y-m-d'))->sum('subtotal'),
+                    'initial' => Purchase::whereDate('created_at', date('Y-m-d'))->sum('initial_weight'),
+                    'final' => Purchase::whereDate('created_at', date('Y-m-d'))->sum('final_weight'),
+                    'reject' => Purchase::whereDate('created_at', date('Y-m-d'))->sum('reject_weight')
+                ],
+                'month' => [
+                    'value' => Purchase::whereMonth('created_at', date('m'))->sum('subtotal'),
+                    'initial' => Purchase::whereMonth('created_at', date('m'))->sum('initial_weight'),
+                    'final' => Purchase::whereMonth('created_at', date('m'))->sum('final_weight'),
+                    'reject' => Purchase::whereMonth('created_at', date('m'))->sum('reject_weight')
+                ],
+                'year' => [
+                    'value' => Purchase::whereYear('created_at', date('Y'))->sum('subtotal'),
+                    'initial' => Purchase::whereYear('created_at', date('Y'))->sum('initial_weight'),
+                    'final' => Purchase::whereYear('created_at', date('Y'))->sum('final_weight'),
+                    'reject' => Purchase::whereYear('created_at', date('Y'))->sum('reject_weight')
+                ]
             ]
             // sum purchase by today
 

@@ -42,4 +42,9 @@ class Helper{
         $result = $prefix.' '.(number_format($price, 0, ',', '.'));
         return $result;
     }
+    public static function number($number)
+    {
+        $result = (number_format($number, 0, ',', '.'));
+        return $result;
+    }
 }
