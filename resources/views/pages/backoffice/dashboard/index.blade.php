@@ -19,9 +19,10 @@
                                     <h4 class="tx-20 fw-bold mb-1 text-white">{{ Helper::price($summary['purchase']['today']['value'] ?? '0') }}</h4>
                                 </div>
                                 <div class="d-flex justify-content-between text-white">
-                                    <p>Berat Kiriman: <br/><b>{{Helper::number($summary['purchase']['today']['initial'])}} KG</b></p>
-                                    <p>Berat Afkiran: <br/><b>{{Helper::number($summary['purchase']['today']['reject'])}} KG</b></p>
-                                    <p>Berat Barang Masuk: <br/><b>{{Helper::number($summary['purchase']['today']['final'])}} KG</b></p>
+                                    <p>Kiriman: <br/><b>{{Helper::number($summary['purchase']['today']['initial'])}} KG</b></p>
+                                    <p>Afkiran: <br/><b>{{Helper::number($summary['purchase']['today']['reject'])}} KG</b></p>
+                                    <p>Barang Masuk: <br/><b>{{Helper::number($summary['purchase']['today']['final'])}} KG</b></p>
+                                    <p>Susut: <br/><b>{{Helper::number($summary['purchase']['today']['decrease'])}} KG</b></p>
                                 </div>
                             </div>
                         </div>
@@ -41,9 +42,10 @@
                                     <h4 class="tx-20 fw-bold mb-1 text-white">{{ Helper::price($summary['purchase']['month']['value'] ?? '0') }}</h4>
                                 </div>
                                 <div class="d-flex justify-content-between text-white">
-                                    <p>Berat Kiriman: <b>{{Helper::number($summary['purchase']['month']['initial'])}} KG</b></p>
-                                    <p>Berat Afkiran: <b>{{Helper::number($summary['purchase']['month']['reject'])}} KG</b></p>
-                                    <p>Berat Barang Masuk: <b>{{Helper::number($summary['purchase']['month']['final'])}} KG</b></p>
+                                    <p>Kiriman: <br/><b>{{Helper::number($summary['purchase']['month']['initial'])}} KG</b></p>
+                                    <p>Afkiran: <br/><b>{{Helper::number($summary['purchase']['month']['reject'])}} KG</b></p>
+                                    <p>Barang Masuk: <br/><b>{{Helper::number($summary['purchase']['month']['final'])}} KG</b></p>
+                                    <p>Susut: <br/><b>{{Helper::number($summary['purchase']['month']['decrease'])}} KG</b></p>
                                 </div>
 
                             </div>
@@ -64,9 +66,10 @@
                                     <h4 class="tx-20 fw-bold mb-1 text-white">{{ Helper::price($summary['purchase']['year']['value'] ?? '0') }}</h4>
                                 </div>
                                 <div class="d-flex justify-content-between text-white">
-                                    <p>Berat Kiriman: <b>{{Helper::number($summary['purchase']['year']['initial'])}} KG</b></p>
-                                    <p>Berat Afkiran: <b>{{Helper::number($summary['purchase']['year']['reject'])}} KG</b></p>
-                                    <p>Berat Barang Masuk: <b>{{Helper::number($summary['purchase']['year']['final'])}} KG</b></p>
+                                    <p>Kiriman: <br/><b>{{Helper::number($summary['purchase']['year']['initial'])}} KG</b></p>
+                                    <p>Afkiran: <br/><b>{{Helper::number($summary['purchase']['year']['reject'])}} KG</b></p>
+                                    <p>Barang Masuk: <br/><b>{{Helper::number($summary['purchase']['year']['final'])}} KG</b></p>
+                                    <p>Susut: <br/><b>{{Helper::number($summary['purchase']['year']['decrease'])}} KG</b></p>
                                 </div>
 
                             </div>

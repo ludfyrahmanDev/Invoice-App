@@ -46,25 +46,40 @@ class DashboardController extends Controller
                 'today' => [
                     'value' => Purchase::whereDate('created_at', date('Y-m-d'))->sum('subtotal'),
                     'initial' => Purchase::whereDate('created_at', date('Y-m-d'))->sum('initial_weight'),
-                    'final' => Purchase::whereDate('created_at', date('Y-m-d'))->sum('final_weight'),
+                    'final' => Purchase::whereDate('created_at', date('Y-m-d'))->with('purchase_detail')->get()->sum(function ($item) {
+                        return $item->purchase_detail->sum('qty');
+                    }),
+                    'decrease' => Purchase::whereDate('created_at', date('Y-m-d'))->sum('final_weight') - Purchase::whereDate('created_at', date('Y-m-d'))->with('purchase_detail')->get()->sum(function ($item) {
+                        return $item->purchase_detail->sum('qty');
+                    }),
                     'reject' => Purchase::whereDate('created_at', date('Y-m-d'))->sum('reject_weight')
                 ],
                 'month' => [
                     'value' => Purchase::whereMonth('created_at', date('m'))->sum('subtotal'),
                     'initial' => Purchase::whereMonth('created_at', date('m'))->sum('initial_weight'),
-                    'final' => Purchase::whereMonth('created_at', date('m'))->sum('final_weight'),
+                    'final' => Purchase::whereMonth('created_at', date('m'))->with('purchase_detail')->get()->sum(function ($item) {
+                        return $item->purchase_detail->sum('qty');
+                    }),
+                    'decrease' => Purchase::whereMonth('created_at', date('m'))->sum('final_weight') - Purchase::whereMonth('created_at', date('m'))->with('purchase_detail')->get()->sum(function ($item) {
+                        return $item->purchase_detail->sum('qty');
+                    }),
                     'reject' => Purchase::whereMonth('created_at', date('m'))->sum('reject_weight')
                 ],
                 'year' => [
                     'value' => Purchase::whereYear('created_at', date('Y'))->sum('subtotal'),
                     'initial' => Purchase::whereYear('created_at', date('Y'))->sum('initial_weight'),
-                    'final' => Purchase::whereYear('created_at', date('Y'))->sum('final_weight'),
+                    'final' => Purchase::whereYear('created_at', date('Y'))->with('purchase_detail')->get()->sum(function ($item) {
+                        return $item->purchase_detail->sum('qty');
+                    }),
+                    'decrease' => Purchase::whereYear('created_at', date('Y'))->sum('final_weight') - Purchase::whereYear('created_at', date('Y'))->with('purchase_detail')->get()->sum(function ($item) {
+                        return $item->purchase_detail->sum('qty');
+                    }),
                     'reject' => Purchase::whereYear('created_at', date('Y'))->sum('reject_weight')
                 ]
             ]
             // sum purchase by today
-
         ];
+
         $customers = [];
         return view('pages.backoffice.dashboard.index', compact('summary', 'customers'));
     }
