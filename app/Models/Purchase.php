@@ -23,7 +23,8 @@ class Purchase extends Model
         'total',
         'description',
         'status',
-        'user_id'
+        'user_id',
+        'created_at',
     ];
 
     protected $appends = ['reject_weight_presentase'];

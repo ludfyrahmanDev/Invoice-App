@@ -303,6 +303,7 @@ class PurchaseController extends Controller
                 'description' => $request->description ?? '-',
                 'status' => 'paid',
                 'user_id' => auth()->user()->id,
+                'created_at' => date('Y-m-d H:i:s', strtotime($request->invoice_date)),
             ]);
             $purchase = Purchase::create($data);
             $purchase_id = $purchase->id;
@@ -431,6 +432,8 @@ class PurchaseController extends Controller
                 'description' => $request->description ?? '-',
                 'status' => 'paid',
                 'user_id' => auth()->user()->id,
+                // make y-m-d h:i:s from invoice date
+                'created_at' => date('Y-m-d H:i:s', strtotime($request->invoice_date)),
             ]);
             $purchase = Purchase::find($id)->update($data);
             $purchase_id = $id;
