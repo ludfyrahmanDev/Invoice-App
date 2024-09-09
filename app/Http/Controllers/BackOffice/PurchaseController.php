@@ -173,7 +173,9 @@ class PurchaseController extends Controller
                 // filter by start date and end date
                 if($request->start_date && $request->end_date){
                     $category->whereHas('subcategory.purchaseDetails', function($query) use ($request){
-                        $query->whereBetween('created_at', [$request->start_date, $request->end_date]);
+                        $query->whereHas('subcategory.purchaseDetails.purchase', function($query) use ($request){
+                            $query->whereBetween('created_at', [$request->start_date, $request->end_date]);
+                        });
                     });
                 }
                 $category = $category->get();
@@ -194,7 +196,63 @@ class PurchaseController extends Controller
                 'qty' => $qty,
             ];
 
-        }else{
+        }else if($request->report_type == 'rincian'){
+            $supplier_id = $request->supplier_id;
+            $head_supplier_id = $request->head_supplier_id;
+            $supplier = Supplier::find($supplier_id);
+            $view = 'pages.backoffice.purchase.rincian';
+            $category = Purchase::with('supplier', 'purchase_detail','purchase_detail.subcategory','purchase_detail.subcategory.category');
+            if($request->start_date && $request->end_date){
+                $category->whereDate('invoice_date', '>=', $request->start_date)->whereDate('invoice_date', '<=', $request->end_date);
+            }
+            if($supplier_id){
+                $category->where('supplier_id', $supplier_id);
+            }
+            if($head_supplier_id){
+                $supplier = Supplier::find($head_supplier_id);
+                $category->whereHas('supplier', function($query) use ($head_supplier_id){
+                    $query->where('parent_id', $head_supplier_id);
+                })
+                ->orWhere('supplier_id', $head_supplier_id);
+            }
+            $category = $category->get();
+            $list = [];
+            foreach ($category as $key => $item) {
+                $detail = [];
+                $item->purchase_detail = $item->purchase_detail->sortBy('subcategory_id');
+                foreach ($item->purchase_detail as $key => $purchase) {
+                    // if exist replace qty and subtotal
+                    if(isset($list[$item->id])){
+                        $list[$item->id]->qty += $purchase->qty ?? 0;
+                        $list[$item->id]->subtotal += $purchase->subtotal ?? 0;
+                    }else{
+                        if($purchase->subcategory?->name != null || $purchase->subcategory?->name != ''){
+                            $list[$item->id] = (object)[
+                                'name' => $item->supplier?->name_alias,
+                                'id' => $item->id,
+                                'qty' => $purchase->qty,
+                                'price' => $purchase->price,
+                                'invoice_number' => $item->invoice_number,
+                                'subtotal' => $purchase->subtotal,
+                            ];
+                        }
+                    }
+                    array_filter($list);
+
+                }
+                // $list[] = $detail;
+            }
+            ksort($list);
+            // list
+            $list = collect($list)->values()->all();
+            // order by category id asc
+            $data = [
+                'data' => $list,
+                'supplier' => $supplier,
+                'qty' => array_sum(array_column($list, 'qty')) == 0 ? 1 : array_sum(array_column($list, 'qty')),
+                'subtotal' => array_sum(array_column($list, 'subtotal')),
+            ];
+        }else {
             $supplier_id = $request->supplier_id;
             $head_supplier_id = $request->head_supplier_id;
             $supplier = Supplier::find($supplier_id);
