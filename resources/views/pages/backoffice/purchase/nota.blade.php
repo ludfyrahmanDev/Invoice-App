@@ -92,7 +92,13 @@
                     <td>No Invoice</td><td>:</td><td> {{$data->invoice_number}}</td>
                 </tr>
                 <tr>
-                    <td>Berat Masuk</td><td>:</td><td>{{ $data->final_weight }}</td>
+                    <td>Berat Masuk</td><td>:</td><td>{{ $all_qty }} Kg</td>
+                </tr>
+                <tr>
+                    <td>Berat Afkir</td><td>:</td><td>{{ $data->reject_weight }} Kg ( {{ $data->reject_weight_presentase }}% )</td>
+                </tr>
+                <tr>
+                    <td>Berat Susut</td><td>:</td><td>{{$data->final_weight - $all_qty}} Kg</td>
                 </tr>
                 <tr>
                     <td>Total Harga</td><td>:</td><td>{{Helper::price($all_subtotal)}}</td>
