@@ -43,9 +43,12 @@ class PurchaseController extends Controller
         $title = 'Tambah Data Pembelian';
         $checkLatestPurchase = Purchase::latest()->first();
         // get last number invoice_number
-        $inv = explode('-', $checkLatestPurchase->invoice_number)[0];
+        $inv = explode('-', $checkLatestPurchase?->invoice_number)[0] ?? 0;
         // get last character of invoice number
-        $last = substr($inv, -1);
+        $last = substr($inv, -1) ?? 0;
+        if($last == ""){
+            $last = 0;
+        }
         $invoice_number = date('Ymd').($last + 1);
         // add rand number to invoice number
         $data = (object)[
@@ -100,6 +103,30 @@ class PurchaseController extends Controller
         return $pdf->stream('invoice-'.$data->invoice_number.'.pdf');
     }
 
+    public function nota($id)
+    {
+        $data = Purchase::with('supplier', 'purchase_detail','purchase_detail.subcategory','purchase_detail.subcategory.category')->find($id);
+        // group purchase detail with category
+        $detail = [];
+        // $data->purchase_detail = $data->purchase_detail->sortBy('subcategory_id');
+        foreach ($data->purchase_detail as $key => $purchase) {
+            $detail[$purchase->subcategory?->category?->id][] = $purchase;
+        }
+        // sort $detail key asc
+        ksort($detail);
+        // change key to value
+        $detailChange = [];
+        foreach ($detail as $key => $value) {
+            $model = Category::find($key);
+            $detailChange[$model->name] = $value;
+        }
+
+        $data->detail = $detailChange;
+        $title = 'Detail Data Pembelian';
+        $pdf = \PDF::loadView('pages.backoffice.purchase.nota', compact('data', 'title'));
+        return $pdf->stream('invoice-'.$data->invoice_number.'.pdf');
+    }
+
     public function report(Request $request){
         $suppliers = Supplier::all();
         $head_supplier = Supplier::where('parent_id', null)->get();
@@ -151,7 +178,7 @@ class PurchaseController extends Controller
         $supplier = null;
         if($request->report_type == 'mutu'){
             $view = 'pages.backoffice.purchase.category';
-            $category = Category::with('subcategory', 'subcategory.purchaseDetails');
+            $category = Category::with('subcategory', 'subcategory.purchaseDetails','subcategory.purchaseDetails.purchase');
             $list = (object)[];
             $qty = 0;
             if($request->category_id){
@@ -159,20 +186,23 @@ class PurchaseController extends Controller
                 // filter by start date and end date
                 if($request->start_date && $request->end_date){
                     $category->subcategory = $category->subcategory->filter(function($item) use ($request){
-                        $item->qty = $item->purchaseDetails->whereBetween('created_at', [$request->start_date, $request->end_date])->sum('qty');
+                        $item->qty = $item->purchaseDetailsFilter()->sum('qty');
+                        return $item;
+                    });
+                }else{
+                    // sum qty in purchase detail subcategory
+                    $category->subcategory->map(function($item){
+                        $item->qty = $item->purchaseDetails->sum('qty');
                         return $item;
                     });
                 }
-                // sum qty in purchase detail subcategory
-                $category->subcategory->map(function($item){
-                    $item->qty = $item->purchaseDetails->sum('qty');
-                    return $item;
-                });
+
                 $list = $category->subcategory;
             }else{
                 // filter by start date and end date
                 if($request->start_date && $request->end_date){
                     $category->whereHas('subcategory.purchaseDetails', function($query) use ($request){
+                        // $query->whereBetween('created_at', [$request->start_date, $request->end_date]);
                         $query->whereHas('subcategory.purchaseDetails.purchase', function($query) use ($request){
                             $query->whereBetween('created_at', [$request->start_date, $request->end_date]);
                         });
@@ -252,7 +282,7 @@ class PurchaseController extends Controller
                 'qty' => array_sum(array_column($list, 'qty')) == 0 ? 1 : array_sum(array_column($list, 'qty')),
                 'subtotal' => array_sum(array_column($list, 'subtotal')),
             ];
-        }else {
+        }else{
             $supplier_id = $request->supplier_id;
             $head_supplier_id = $request->head_supplier_id;
             $supplier = Supplier::find($supplier_id);
@@ -296,6 +326,7 @@ class PurchaseController extends Controller
                     array_filter($list);
 
                 }
+
                 // $list[] = $detail;
             }
             ksort($list);
@@ -303,13 +334,13 @@ class PurchaseController extends Controller
             $list = collect($list)->values()->all();
             // order by category id asc
             $list = collect($list)->sortBy('category_id')->values()->all();
-
             $data = [
                 'data' => $list,
                 'supplier' => $supplier,
                 'qty' => array_sum(array_column($list, 'qty')) == 0 ? 1 : array_sum(array_column($list, 'qty')),
                 'subtotal' => array_sum(array_column($list, 'subtotal')),
             ];
+
         }
         $date = date('Ymd');
         $pdf = \PDF::loadView($view, compact('data', 'title', 'supplier', 'request'));
@@ -344,9 +375,9 @@ class PurchaseController extends Controller
             $invoice_number = $request->invoice_number.'-'.$request->invoice_code;
             // validate invoice number
             $check = Purchase::where('invoice_number', $invoice_number)->first();
-            if ($check) {
-                return back()->with('failed', 'Nomor invoice sudah ada!');
-            }
+            // if ($check) {
+            //     return back()->with('failed', 'Nomor invoice sudah ada!');
+            // }
             $data = ([
                 'supplier_id' => $request->supplier_id,
                 'invoice_number' => $invoice_number,
@@ -405,8 +436,8 @@ class PurchaseController extends Controller
         $data = Purchase::with('supplier', 'purchase_detail','purchase_detail.subcategory','purchase_detail.subcategory.category')
         ->find($id);
         // group purchase detail with category
-        // order by category
-
+        // order by subcategory id
+        // $data->purchase_detail = $data->purchase_detail->sortBy('subcategory_id');
         $detail = [];
         foreach ($data->purchase_detail as $key => $purchase) {
             $detail[$purchase->subcategory?->category?->id][] = $purchase;
@@ -473,9 +504,9 @@ class PurchaseController extends Controller
             $invoice_number = $request->invoice_number.'-'.$request->invoice_code;
             // validate invoice number
             $check = Purchase::where('invoice_number', $invoice_number)->count();
-            if ($check > 1) {
-                return back()->with('failed', 'Nomor invoice sudah ada!');
-            }
+            // if ($check > 1) {
+            //     return back()->with('failed', 'Nomor invoice sudah ada!');
+            // }
             $data = ([
                 'supplier_id' => $request->supplier_id,
                 'invoice_number' => $invoice_number,
@@ -490,7 +521,6 @@ class PurchaseController extends Controller
                 'description' => $request->description ?? '-',
                 'status' => 'paid',
                 'user_id' => auth()->user()->id,
-                // make y-m-d h:i:s from invoice date
                 'created_at' => date('Y-m-d H:i:s', strtotime($request->invoice_date)),
             ]);
             $purchase = Purchase::find($id)->update($data);

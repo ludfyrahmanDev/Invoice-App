@@ -4,8 +4,9 @@
     <div class="container mt-4">
         <div class="card">
             <div class="card-header">
-                <h4 class="card-title mb-1 d-flex justify-content-between">{{ $title }}
+                <h4 class="card-title mb-1 d-flex justify-content-between gap-2 g-2">{{ $title }}
                     <a href="{{route('purchase.print', $data->id)}}" target="_blank"><button class="btn btn-primary">Cetak</button></a>
+                    <a href="{{route('purchase.nota', $data->id)}}" target="_blank"><button class="btn btn-primary">Cetak Nota Pembayaran</button></a>
                 </h4>
                 <a href="{{ route('purchase.index') }}" class="btn btn-info">Lihat Semua Transaksi</a>
                 @if (session('failed'))
