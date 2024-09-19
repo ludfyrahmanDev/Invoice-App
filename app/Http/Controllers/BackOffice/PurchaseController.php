@@ -204,16 +204,19 @@ class PurchaseController extends Controller
                     $category->whereHas('subcategory.purchaseDetails', function($query) use ($request){
                         // $query->whereBetween('created_at', [$request->start_date, $request->end_date]);
                         $query->whereHas('subcategory.purchaseDetails.purchase', function($query) use ($request){
-                            $query->whereBetween('created_at', [$request->start_date, $request->end_date]);
+                            $from = $request->start_date;
+                            $to = $request->end_date;
+                            $query->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to);
                         });
                     });
+
                 }
                 $category = $category->get();
                 $list = [];
                 foreach ($category as $key => $item) {
                     // $item->qty = $item->subcategory->sum('qty');
                     foreach ($item->subcategory as $key => $sub) {
-                        $sub->qty = $sub->purchaseDetails->sum('qty');
+                        $sub->qty = $sub->purchaseDetailsFilter()->sum('qty');
                         $list[] = $sub;
                         $qty += $sub->qty;
                     }
