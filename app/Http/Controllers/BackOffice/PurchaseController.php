@@ -235,25 +235,24 @@ class PurchaseController extends Controller
                 }
                
                 $list = $category->subcategory;
+                $qty = $list->sum('qty');
             }else{
                 // filter by start date and end date
                 if($request->start_date && $request->end_date){
-                    $category->whereHas('subcategory.purchaseDetails', function($query) use ($request){
-                        // $query->whereBetween('created_at', [$request->start_date, $request->end_date]);
-                        $query->whereHas('subcategory.purchaseDetails.purchase', function($query) use ($request){
-                            $from = $request->start_date;
-                            $to = $request->end_date;
-                            $query->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to);
-                        });
+                    $category->whereHas('subcategory.purchaseDetails.purchase', function($query) use ($request){
+                        $from = date('Y-m-d', strtotime($request->start_date));
+                        $to = date('Y-m-d', strtotime($request->end_date));
+                        $query->whereDate('invoice_date', '>=', $from)->whereDate('invoice_date', '<=', $to);
                     });
-                    
                 }
                 $category = $category->get();
                 $list = [];
                 foreach ($category as $key => $item) {
                     // $item->qty = $item->subcategory->sum('qty');
                     foreach ($item->subcategory as $key => $sub) {
-                        $sub->qty = $sub->purchaseDetailsFilter()->sum('qty');
+                        $sub->qty = ($request->start_date && $request->end_date)
+                            ? $sub->purchaseDetailsFilter()->sum('qty')
+                            : $sub->purchaseDetails->sum('qty');
                         $list[] = $sub;
                         $qty += $sub->qty;
                     }
@@ -278,13 +277,17 @@ class PurchaseController extends Controller
             }
             if($head_supplier_id){
                 $supplier = Supplier::find($head_supplier_id);
-                $category->whereHas('supplier', function($query) use ($head_supplier_id){
-                    $query->where('parent_id', $head_supplier_id);
-                })
-                ->orWhere('supplier_id', $head_supplier_id);
+                $category->where(function($query) use ($head_supplier_id){
+                    $query->whereHas('supplier', function($q) use ($head_supplier_id){
+                        $q->where('parent_id', $head_supplier_id);
+                    })
+                    ->orWhere('supplier_id', $head_supplier_id);
+                });
             }
             if($request->start_date && $request->end_date){
-                $category->whereDate('invoice_date', '>=', $request->start_date)->whereDate('invoice_date', '<=', $request->end_date);
+                $from = date('Y-m-d', strtotime($request->start_date));
+                $to = date('Y-m-d', strtotime($request->end_date));
+                $category->whereDate('invoice_date', '>=', $from)->whereDate('invoice_date', '<=', $to);
             }
             $category = $category->get();
             $list = [];
@@ -331,17 +334,21 @@ class PurchaseController extends Controller
             $view = 'pages.backoffice.purchase.supplier';
             $category = Purchase::with('supplier', 'purchase_detail','purchase_detail.subcategory','purchase_detail.subcategory.category');
             if($request->start_date && $request->end_date){
-                $category->whereDate('invoice_date', '>=', $request->start_date)->whereDate('invoice_date', '<=', $request->end_date);
+                $from = date('Y-m-d', strtotime($request->start_date));
+                $to = date('Y-m-d', strtotime($request->end_date));
+                $category->whereDate('invoice_date', '>=', $from)->whereDate('invoice_date', '<=', $to);
             }
             if($supplier_id){
                 $category->where('supplier_id', $supplier_id);
             }
             if($head_supplier_id){
                 $supplier = Supplier::find($head_supplier_id);
-                $category->whereHas('supplier', function($query) use ($head_supplier_id){
-                    $query->orWhere('parent_id', $head_supplier_id);
+                $category->where(function($query) use ($head_supplier_id){
+                    $query->whereHas('supplier', function($q) use ($head_supplier_id){
+                        $q->where('parent_id', $head_supplier_id);
+                    })
+                    ->orWhere('supplier_id', $head_supplier_id);
                 });
-                $category->Where('supplier_id', $head_supplier_id);
             }
             $category = $category->get();
             $list = [];
@@ -576,7 +583,7 @@ class PurchaseController extends Controller
             ]);
             $purchase = Purchase::find($id)->update($data);
             $purchase_id = $id;
-            Purchase::find($id)->purchase_detail()->delete();
+            Purchase::find($id)->purchase_detail()->forceDelete();
             foreach ($request->subcategory_id as $key => $value) {
                 $data_detail = ([
                     'purchase_id' => $purchase_id,
@@ -602,8 +609,31 @@ class PurchaseController extends Controller
      */
     public function destroy($id)
     {
-        //
-        SubCategory::find($id)->delete();
-        return redirect('sub_category')->with('success', 'Berhasil mengubah data!');
+        try {
+            DB::beginTransaction();
+            $purchase = Purchase::findOrFail($id);
+            $purchase->purchase_detail()->delete();
+            $purchase->delete();
+            DB::commit();
+            return redirect('purchase')->with('success', 'Berhasil menghapus data pembelian!');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return back()->with('failed', 'Gagal menghapus data! ' . $th->getMessage());
+        }
+    }
+
+    public function restore($id)
+    {
+        try {
+            DB::beginTransaction();
+            $purchase = Purchase::withTrashed()->findOrFail($id);
+            $purchase->restore();
+            $purchase->purchase_detail()->withTrashed()->restore();
+            DB::commit();
+            return redirect('purchase')->with('success', 'Berhasil mengembalikan data pembelian!');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return back()->with('failed', 'Gagal mengembalikan data! ' . $th->getMessage());
+        }
     }
 }

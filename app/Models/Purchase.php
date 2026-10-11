@@ -70,4 +70,19 @@ class Purchase extends Model
         return $this->hasMany(PurchaseDetail::class, 'purchase_id', 'id');
     }
 
+    protected static function booted()
+    {
+        static::deleting(function ($purchase) {
+            if ($purchase->isForceDeleting()) {
+                $purchase->purchase_detail()->withTrashed()->forceDelete();
+            } else {
+                $purchase->purchase_detail()->delete();
+            }
+        });
+
+        static::restoring(function ($purchase) {
+            $purchase->purchase_detail()->withTrashed()->restore();
+        });
+    }
+
 }

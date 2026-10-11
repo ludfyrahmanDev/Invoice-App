@@ -25,12 +25,18 @@ class SubCategory extends Model
 
     public function purchaseDetails()
     {
-        return $this->hasMany(PurchaseDetail::class, 'subcategory_id', 'id');
+        return $this->hasMany(PurchaseDetail::class, 'subcategory_id', 'id')
+            ->whereHas('purchase');
     }
     public function purchaseDetailsFilter()
     {
-        $from= date('Y-m-d', strtotime(request()->start_date));
-        $to= date('Y-m-d', strtotime(request()->end_date));
-        return $this->hasMany(PurchaseDetail::class, 'subcategory_id', 'id')->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to);
+        return $this->hasMany(PurchaseDetail::class, 'subcategory_id', 'id')
+            ->whereHas('purchase', function ($query) {
+                if (request()->start_date && request()->end_date) {
+                    $from = date('Y-m-d', strtotime(request()->start_date));
+                    $to = date('Y-m-d', strtotime(request()->end_date));
+                    $query->whereDate('invoice_date', '>=', $from)->whereDate('invoice_date', '<=', $to);
+                }
+            });
     }
 }

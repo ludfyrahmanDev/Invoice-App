@@ -37,6 +37,7 @@ Route::middleware(['auth',  'verified'])->group(function () {
     // purchase.print
     Route::get('purchase/{purchase}/print', [PurchaseController::class, 'print'])->name('purchase.print');
     Route::get('purchase/{purchase}/nota', [PurchaseController::class, 'nota'])->name('purchase.nota');
+    Route::post('purchase/{purchase}/restore', [PurchaseController::class, 'restore'])->name('purchase.restore');
     Route::get('purchaseallPrint', [PurchaseController::class, 'allPrint'])->name('purchase.allPrint');
     Route::get('purchaseReport', [PurchaseController::class, 'report'])->name('purchase.report');
     Route::post('payment/{id}', [PeminjamanController::class, 'approveTransaction']);

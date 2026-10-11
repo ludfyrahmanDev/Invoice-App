@@ -9,6 +9,11 @@
                     <a href="{{route('purchase.print', $data->id)}}" target="_blank"><button class="btn btn-primary">Cetak</button></a>
                     <a href="{{route('purchase.nota', $data->id)}}" target="_blank"><button class="btn btn-info">Cetak Nota Pembayaran</button></a>
                     <a href="{{route('purchase.edit', $data->id)}}"><button class="btn btn-warning">Edit</button></a>
+                    <form method="POST" class="d-inline" action="{{route('purchase.destroy', $data->id)}}">
+                        @method('delete')
+                        @csrf
+                        <button type="submit" onclick="return confirm('apakah anda yakin ingin menghapus data ??')" class="btn btn-danger">Hapus</button>
+                    </form>
                     </span>
                 </h4>
                 <a href="{{ route('purchase.index') }}" class="btn btn-info">Lihat Semua Transaksi</a>
