@@ -40,14 +40,14 @@
             @foreach ($data['data'] as $item)
                 <tr>
                     <td>{{ $item->name }}</td>
-                    <td>{{ $item->qty }} Kg</td>
+                    <td>{{ number_format($item->qty) }} Kg</td>
                 </tr>
             @endforeach
         </tbody>
         <tfoot>
             <tr>
                 <td>Total</td>
-                <td>{{ $data['qty'] != 0 ? $data['qty'] : $data['data']->sum('qty')}} Kg</td>
+                <td>{{ $data['qty'] != 0 ? $data['qty'] : (count($data['data']) > 0 ? $data['data']?->sum('qty') : 0)}} Kg</td>
             </tr>
         </tfoot>
     </table>

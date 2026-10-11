@@ -25,7 +25,7 @@
                             </div>
                             <div class="card-sigin">
                                 <div class="main-signup-header">
-                                    <h2>Selamat Data di Invoice App CV Sampurno Abadi</h2>
+                                    <h2>Selamat Datang di Invoice App CV Sampurno Abadi</h2>
                                     <h5 class="fw-semibold mb-4">Please sign in to continue.</h5>
                                     <form method="POST" action="{{ route('login') }}">
                                         @csrf
@@ -40,12 +40,20 @@
                                         </div>
                                         <div class="form-group">
                                             <label>Password</label>
-                                            <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
-                                            @error('password')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
+                                            <div class="input-group">
+                                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
+                                                @error('password')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                                <div class="input-group-text"  id="eye_password">
+                                                    <div class="input-group-text">
+                                                        <i class="fas fa-eye-slash tx-24 lh--9 op-6"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
                                         </div>
                                         <button type="submit" class="btn btn-primary btn-block">
                                             {{ __('Login') }}
@@ -62,4 +70,17 @@
         </div>
     </div><!-- End -->
 </div>
+@push('script')
+<script>
+     $('#eye_password').click(function(){
+        var password = $("#password").attr('type');
+        if(password == 'text'){
+            $("#password").prop('type', 'password');
+        }else{
+            $("#password").prop('type', 'text');
+        }
+        $('#eye_password i').toggleClass("fa-eye fa-eye-slash");
+    });
+</script>
+@endpush
 @endsection

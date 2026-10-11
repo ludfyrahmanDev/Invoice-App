@@ -36,6 +36,7 @@
                                     <option value="head_supplier" {{'head_supplier' == $request->report_type ? 'selected' : ''}}>Kepala Belandang</option>
                                     <option value="supplier" {{'supplier' == $request->report_type ? 'selected' : ''}}>Belandang</option>
                                     <option value="mutu" {{'mutu' == $request->report_type ? 'selected' : ''}}>Mutu</option>
+                                    <option value="rincian" {{'rincian' == $request->report_type ? 'selected' : ''}}>Rincian Pembelian Belandang</option>
                                 </select>
                             </div>
                             <div class="form-group col-md-4" id="category_id">

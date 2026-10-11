@@ -5,7 +5,11 @@
         <div class="card">
             <div class="card-header">
                 <h4 class="card-title mb-1 d-flex justify-content-between">{{ $title }}
+                    <span>
                     <a href="{{route('purchase.print', $data->id)}}" target="_blank"><button class="btn btn-primary">Cetak</button></a>
+                    <a href="{{route('purchase.nota', $data->id)}}" target="_blank"><button class="btn btn-info">Cetak Nota Pembayaran</button></a>
+                    <a href="{{route('purchase.edit', $data->id)}}"><button class="btn btn-warning">Edit</button></a>
+                    </span>
                 </h4>
                 <a href="{{ route('purchase.index') }}" class="btn btn-info">Lihat Semua Transaksi</a>
                 @if (session('failed'))
@@ -120,11 +124,12 @@
                         </div>
                         <div class="col-md-6">
                             <h4>Susut:{{$data->final_weight - $all_qty}}</h4>
+                            <p>Mohon Diperhatikan:<br><span style='font-weight:bold;text-transform: uppercase;'> tidak membeli tembakau biru, hitam, busuk, merah bedeng, kasar-kasar</span></p>
                         </div>
                         <div class="col-md-6">
                             <h5>Keterangan: {{$data->description}}</h5>
                         </div>
-                        <div class="col-md-6 text-center">
+                        <div class="col-md-6 text-center d-none">
                             {{-- show user login --}}
                             <h5>Kasir</h5>
                             <div style="height: 50px"></div>

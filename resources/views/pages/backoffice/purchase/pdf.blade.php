@@ -25,6 +25,9 @@
     .border {
         border-top: 1px solid #000;
     }
+    .border-bottom{
+        border-bottom: 1px solid #000;
+    }
 
     h5,h6,h4 {
         margin: 0;
@@ -37,6 +40,9 @@
         border: 1px solid #dddd;
         border-collapse: collapse;
     }
+    table td{
+        padding:4px;
+    }
     body{
         font-size: 14px;
     }
@@ -46,10 +52,14 @@
     .right {
         float: right;
     }
+    .d-none{
+        display:none!important;
+    }
 </style>
 <body>
     {{-- include header --}}
-    @include('pages.backoffice.purchase.header')
+    <!-- @include('pages.backoffice.purchase.header') -->
+     <!-- kode diatas adalah kode kop invoice -->
     <div class="row mt-4">
         <div class="col-md-6">
             <h4 class="text-start">INVOICE No. {{$data->invoice_number}}</h4>
@@ -72,7 +82,7 @@
                 <tbody>
                     <tr>
                         <td>{{ date('d-M-Y', strtotime($data->invoice_date)) }}</td>
-                        <td>{{ $data->supplier?->name_alias }}</td>
+                        <td>{{ $data->supplier?->alias == '' ? $data->supplier->name : $data->supplier?->alias }}</td>
                         <td class="text-center">{{ $data->initial_weight }}</td>
                         <td class="text-center">{{ $data->reject_weight }}</td>
                         <td class="text-center">{{ $data->final_weight }}</td>
@@ -114,7 +124,7 @@
                                 <td class="text-end">{{ Helper::price($childItem->subtotal) }}</td>
                             </tr>
                         @endforeach
-                        <tr class="border">
+                        <tr class="border border-bottom">
                             <td><b>Total {{$key}}</b></td>
                             <td ><b>{{$qty}}</b></td>
                             <td class="text-end"><b>{{Helper::price($subtotal / $qty)}}</b></td>
@@ -152,12 +162,15 @@
         </div>
         <div class="col-md-6">
             <h2>Susut:{{$data->final_weight - $all_qty}}</h2>
+            <p>Mohon Diperhatikan:<br><span style='font-weight:bold;text-transform: uppercase;'> tidak membeli tembakau biru, hitam, busuk, merah bedeng, kasar-kasar</span></p>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6" style='margin-top:8px'>
+            <br>
             <h5>Keterangan: {{$data->description}}</h5>
         </div>
+        
         <div style="margin-top: 8px">
-            <div class="col-md-6 text-center left">
+            <div class="col-md-6 text-center left d-none">
                 {{-- show user login --}}
                 <h5>Kasir</h5>
                 <div style="height: 30px"></div>
@@ -166,8 +179,11 @@
             <div class="col-md-6 text-center right">
                 <h5>Belandang</h5>
                 <div style="height: 30px"></div>
-                <h5>{{$data->supplier->name_alias}} </h5>
+                <h5>{{$data->supplier->alias == '' ? $data->supplier->name : $data->supplier->alias}} </h5>
             </div>
+        </div>
+        <div style='margin-top:100px'>
+            <h6 style='font-size:7px'>{{$data->supplier->name}} </h6>
         </div>
     </div>
 </body>

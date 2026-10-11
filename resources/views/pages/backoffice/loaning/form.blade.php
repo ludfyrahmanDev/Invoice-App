@@ -33,7 +33,7 @@
                                         class="form-control @error('supplier') parsley-error @enderror" placeholder="supplier">
                                         <option value="">Pilih Supplier</option>
                                         @foreach ($data->dataSupplier as $item)
-                                            <option value="{{$item->id}}" {{ $data->type == 'edit' && $data->supplier == $item->id? 'selected' :'' }}>{{$item->name}}</option>
+                                            <option value="{{$item->id}}" {{ $data->type == 'edit' && $data->supplier == $item->id? 'selected' :'' }}>{{$item->name_alias}}</option>
                                         @endforeach
                                     </select>
                                    
