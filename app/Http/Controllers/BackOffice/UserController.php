@@ -141,7 +141,7 @@ class UserController extends Controller
         $id = auth()->user()->id;
         $request->validate([
             'username' => 'required',
-            'email' => 'required|email',
+            'email' => 'required',
             'password' => 'nullable|min:6|confirmed|unique:users,email,' . $id,
         ]);
         try {

@@ -3,7 +3,34 @@
 @section('content-app')
     <div class="container mt-5">
         <!-- breadcrumb -->
+        <div class="row m-2">
+            <fieldset>
+            </fieldset>
+            <form class="form-horizontal" action="{{ route('dashboard') }}" method="GET"
+                enctype="multipart/form-data" data-parsley-validate="">
+                <div class="row">
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label for="">Tanggal Transaksi</label>
+                            <div class="row no-gutters">
+                                <div class="col-md-6">
+                                    <input type="date" class="form-control" placeholder="Start Date" value="{{ $start_Date }}" name="start_date">
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="date" class="form-control" placeholder="End Date" value="{{ $end_Date }}" name="end_date">
+                                </div>
+                            </div>
 
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-sm btn-success " style="margin-top: 30px !important;"
+                            type="submit"><i class="mdi mdi-filter"></i> Filter</button>
+                    
+                    </div>
+                </div>
+            </form>
+        </div>
         <!-- row -->
         <div class="row row-sm justify-content-md-center">
 
@@ -20,7 +47,7 @@
                                 </div>
                                 <div class="d-flex justify-content-between text-white">
                                     <p>Kiriman: <br/><b>{{Helper::number($summary['purchase']['today']['initial'])}} KG</b></p>
-                                    <p>Afkiran: <br/><b>{{Helper::number($summary['purchase']['today']['reject'])}} KG</b></p>
+                                    <p>Afkiran: <br/><b>{{Helper::number($summary['purchase']['today']['reject'])}} KG <br/>( {{Helper::percentage($summary['purchase']['today']['reject'], $summary['purchase']['today']['initial'])}} )</b></p>
                                     <p>Barang Masuk: <br/><b>{{Helper::number($summary['purchase']['today']['final'])}} KG</b></p>
                                     <p>Susut: <br/><b>{{Helper::number($summary['purchase']['today']['decrease'])}} KG</b></p>
                                 </div>
@@ -43,7 +70,7 @@
                                 </div>
                                 <div class="d-flex justify-content-between text-white">
                                     <p>Kiriman: <br/><b>{{Helper::number($summary['purchase']['month']['initial'])}} KG</b></p>
-                                    <p>Afkiran: <br/><b>{{Helper::number($summary['purchase']['month']['reject'])}} KG</b></p>
+                                    <p>Afkiran: <br/><b>{{Helper::number($summary['purchase']['month']['reject'])}} KG <br/>({{ Helper::percentage($summary['purchase']['month']['reject'], $summary['purchase']['month']['initial']) }})</b></p>
                                     <p>Barang Masuk: <br/><b>{{Helper::number($summary['purchase']['month']['final'])}} KG</b></p>
                                     <p>Susut: <br/><b>{{Helper::number($summary['purchase']['month']['decrease'])}} KG</b></p>
                                 </div>
@@ -67,7 +94,7 @@
                                 </div>
                                 <div class="d-flex justify-content-between text-white">
                                     <p>Kiriman: <br/><b>{{Helper::number($summary['purchase']['year']['initial'])}} KG</b></p>
-                                    <p>Afkiran: <br/><b>{{Helper::number($summary['purchase']['year']['reject'])}} KG</b></p>
+                                    <p>Afkiran: <br/><b>{{Helper::number($summary['purchase']['year']['reject'])}} KG <br/>({{ Helper::percentage($summary['purchase']['year']['reject'], $summary['purchase']['year']['initial']) }})</b></p>
                                     <p>Barang Masuk: <br/><b>{{Helper::number($summary['purchase']['year']['final'])}} KG</b></p>
                                     <p>Susut: <br/><b>{{Helper::number($summary['purchase']['year']['decrease'])}} KG</b></p>
                                 </div>

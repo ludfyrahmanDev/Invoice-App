@@ -186,6 +186,17 @@
                                                             <td><button type="button" class="btn btn-danger btn-sm remove-item">Hapus</button></td>
                                                         </tr>
                                                     @endforeach
+                                                @elseif(old('qty'))
+                                                    @foreach (old('qty') as $index => $qty)
+                                                        <tr>
+                                                            <td><span id='categoryName' category-id="{{ old('subcategory_id.'.$index) }}"></span> <input type="hidden" name="subcategory_id[]" value="{{ old('subcategory_id.'.$index) }}" /></td>
+                                                            <td class="editable">
+                                                                <input id="qty" type="number" class="form-control" name="qty[]" value="{{ $qty }}" /></td>
+                                                            <td>{{ Helper::price(old('price.'.$index)) }} <input type="hidden" name="price[]" value="{{ old('price.'.$index) }}" id="price" /></td>
+                                                            <td><span class="subtotal">{{ Helper::price(old('subtotal.'.$index)) }}</span> <input type="hidden" name="subtotal[]" value="{{ old('subtotal.'.$index) }}" id="subtotal-input" /></td>
+                                                            <td><button type="button" class="btn btn-danger btn-sm remove-item">Hapus</button></td>
+                                                        </tr>
+                                                    @endforeach
                                                 @else
                                                 <tr id="empty">
                                                     <td class="text-center" colspan="5">Data Kosong</td>
@@ -240,6 +251,22 @@
                                 </div>
 
                             </div>
+                            @if($data->phase == 'draft' || $data->type == 'create')
+                            <div class="col-md-8">
+                                <label for="">Status</label>
+                                <div class="form-group">
+                                    <select name="phase" class="form-control select2 @error('phase') parsley-error @enderror" id="phase">
+                                        <option value="draft" {{$data->phase == 'draft' ? 'selected' : ''}}>Draft</option>
+                                        <option value="publish" {{$data->phase == 'publish' ? 'selected' : ''}}>Publish</option>
+                                    </select>
+                                    @error('phase')
+                                        <ul class="parsley-errors-list filled" id="parsley-id-5">
+                                            <li class="parsley-required">{{ $message }}</li>
+                                        </ul>
+                                    @enderror
+                                </div>
+                            </div>
+                            @endif
                         </div>
                         <div class="form-group mb-0 mt-3 justify-content-end">
                             <div>
@@ -256,6 +283,21 @@
 @push('script')
     <script>
         $(document).ready(function() {
+            $('[id^=categoryName]').each(function() {
+                var categoryId = $(this).attr('category-id');
+                $(this).text(getCategoryName(categoryId));
+            });
+            function getCategoryName(id) {
+                var name = '';
+                @foreach ($parent as $item)
+                    @foreach ($item->subcategory as $childItem)
+                        if (id == '{{ $childItem->id }}') {
+                            name = '{{ $childItem->name }} ({{ $item->name }})';
+                        }
+                    @endforeach
+                @endforeach
+                return name;
+            }
             $('#initial_weight').change(function() {
                 var val = $(this).val();
                 var afkir = $('#reject_weight').val();

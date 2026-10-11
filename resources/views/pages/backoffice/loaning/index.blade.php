@@ -99,7 +99,7 @@
                                     @foreach ($dataSupplier as $item)
                                         <option value="{{ $item->id }}"
                                             {{ $request->supplier == $item->id ? 'selected' : '' }}>
-                                            {{ $item->name }}
+                                            {{ $item->name }} - {{ $item->name_alias }}
 
                                         </option>
                                     @endforeach
@@ -113,7 +113,7 @@
                                 <input type="text" id="start" name="start" placeholder="Tanggal Awal"
                                     onfocus="(this.type='date')" onblur="(this.type='text')"
                                     class="form-control form-control-sm " placeholder="Start"
-                                    value="{{ $request->start }}">
+                                    value="{{ $start_Date }}">
                             </div>
                         </div>
 
@@ -122,7 +122,7 @@
                                 <label for="" style="color: white !important;">Selesai</label>
                                 <input type="text" id="end" name="end" placeholder="Tanggal Akhir"
                                     onfocus="(this.type='date')" onblur="(this.type='text')"
-                                    class="form-control form-control-sm" placeholder="End" value="{{ $request->end }}">
+                                    class="form-control form-control-sm" placeholder="End" value="{{ $end_Date }}">
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -136,7 +136,12 @@
                     </div>
                 </form>
             </div>
-            <div class="card-body">
+           
+            <div class="card-body d-flex flex-column-reverse">
+                @php
+                    $totalHutang = 0;
+                    $totalPembayaran = 0;
+                @endphp
                 <div class="table-responsive">
                     <table class="table text-md-nowrap" id="example1">
                         <thead>
@@ -155,9 +160,12 @@
                                 @php
                                     $totalAngsuran = count($item->angsuran);
                                     $totalBayar = 0;
+                                    $totalHutang += $item->quantity;
+                                    
                                     foreach ($item->angsuran as $itm) {
                                         $totalBayar += $itm->total_payment;
                                     }
+                                    $totalPembayaran += $totalBayar;
                                 @endphp
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
@@ -417,6 +425,18 @@
                         </tbody>
                     </table>
                 </div>
+                <?php 
+                if(isset($_GET['supplier'])){
+                    $supplier = $_GET['supplier'];
+                ?>
+                <div class="">
+                    <h5>Total Hutang : {{ Helper::price($totalHutang ?? '0') }}</h5>
+                    <h5>Total Pembayaran : {{ Helper::price($totalPembayaran ?? '0') }}</h5>
+                    <h5 class="text-danger">Sisa Hutang : {{ Helper::price(($totalHutang ?? '0') - ($totalPembayaran ?? '0')) }}</h5>
+                </div>
+                <?php
+                }
+                ?>
             </div>
         </div>
     </div>

@@ -22,31 +22,38 @@ class PeminjamanController extends Controller
     public function index(Request $request)
     {
         $query = Peminjaman::query();
+        $start_Date =  $request->start ?? date('Y-m-d', strtotime('first day of january this year'));
+        // get end date last date and month of this year
+        $end_Date =  $request->end ?? date('Y-m-d', strtotime('last day of December this year'));
         if ($request->supplier) {
 
             $query = $query->where("supplier_id", $request->supplier);
         }
-        if ($request->start && $request->end) {
-            $query = $query->whereBetween('loaning_date', [$request->start, $request->end]);
-        }
+        // if ($request->start && $request->end) {
+            $query = $query->whereBetween('loaning_date', [$start_Date, $end_Date]);
+        // }
+        $month = date('m');
+        $year = date('y');
         $data = $query->orderBy("id", "desc")->get();
         $summary = [
             'paid' => [
                 // make total key and value from total payment in relation angsuran in peminjaman
-                'total' => PeminjamanDetail::sum('total_payment'),
-                'count' => Peminjaman::where('status', 'paid')->count()
+                'total' => PeminjamanDetail::whereHas('peminjaman', function($query) use($start_Date, $end_Date){
+                    return $query->whereBetween('created_at', [$start_Date, $end_Date]);
+                })->sum('total_payment'),
+                'count' => Peminjaman::where('status', 'paid')->whereBetween('created_at', [$start_Date, $end_Date])->count()
             ],
             'unpaid' => [
-                'total' => Peminjaman::with('angsuran')->where('status', 'unpaid')->get()->sum(function ($item) {
+                'total' => Peminjaman::with('angsuran')->whereBetween('created_at', [$start_Date, $end_Date])->where('status', 'unpaid')->get()->sum(function ($item) {
                     $total = $item->quantity - $item->angsuran->sum('total_payment');
                     return $total;
                 }),
-                'count' => Peminjaman::where('status', 'unpaid')->count()
+                'count' => Peminjaman::where('status', 'unpaid')->whereBetween('created_at', [$start_Date, $end_Date])->count()
             ]
         ];
         $title = 'List Data Peminjaman';
         $dataSupplier = Supplier::all();
-        return view('pages.backoffice.loaning.index', compact('data', 'title', 'summary', 'dataSupplier', 'request'));
+        return view('pages.backoffice.loaning.index', compact('data','start_Date', 'end_Date', 'title', 'summary', 'dataSupplier', 'request'));
     }
 
     /**
@@ -162,6 +169,7 @@ class PeminjamanController extends Controller
         }
     }
 
+
     public function approveTransaction(Request $request, $id)
     {
 
@@ -171,17 +179,71 @@ class PeminjamanController extends Controller
             $data = Peminjaman::where('id', $id)->first();
             $tmpTotal = intval($request->total_payment) + $cek;
             if ($tmpTotal > $data->quantity) {
+                $sisa = $request->total_payment - $data->quantity;
+                $supplier_id = $data->supplier_id;
+                $peminjaman = Peminjaman::where('supplier_id', $supplier_id)->where('status', 'unpaid')->get();
+                if($sisa > 0){
+                    PeminjamanDetail::create([
+                        'peminjaman_id' => $id,
+                        'type_payment' => $request->type_payment,
+                        'total_payment' => $data->quantity,
+                        'description' => $request->description,
+                        'created_by' => Auth::user()->id,
+                        'updated_by' => Auth::user()->id,
+                    ]);
+                    if (($cek + $data->quantity) == $data->quantity) {
+                        Peminjaman::where('id', $id)->update(['status' => 'paid', 'updated_by' => Auth::user()->id]);
+                    }
+                    foreach ($peminjaman as $key => $value) {
+                        $sisaPinjaman = $value->quantity - PeminjamanDetail::where('peminjaman_id', $value->id)->sum('total_payment');
+                        $sisaBayar = $sisaPinjaman - $sisa;
+                        if($sisaBayar >= 0){
+                            $sisaLoan = $sisa - $sisaPinjaman;
+                            PeminjamanDetail::create([
+                                'peminjaman_id' => $value->id,
+                                'type_payment' => $request->type_payment,
+                                'total_payment' =>$sisaLoan < 0 ? $sisa : $sisaPinjaman,
+                                'description' => $request->description,
+                                'created_by' => Auth::user()->id,
+                                'updated_by' => Auth::user()->id,
+                            ]);
+                            $sisa = 0;
+                        }else{
+                            $sisa = $sisa - $sisaPinjaman;
+                            PeminjamanDetail::create([
+                                'peminjaman_id' => $value->id,
+                                'type_payment' => $request->type_payment,
+                                'total_payment' => abs($sisaBayar),
+                                'description' => $request->description,
+                                'created_by' => Auth::user()->id,
+                                'updated_by' => Auth::user()->id,
+                            ]);
+                        }
+                        $total = $value->quantity;
+                        $totalPembayaran = PeminjamanDetail::where('peminjaman_id', $value->id)->sum('total_payment');
+                        if($total == $totalPembayaran){
+                            Peminjaman::where('id', $value->id)->update(['status' => 'paid', 'updated_by' => Auth::user()->id]);
+                        }
 
-                return redirect('peminjaman')->with('failed', 'Jumlah pembayaran melebihi jumlah pinjaman!');
+                        
+                        if($sisa <= 0){
+                            break;
+                        }
+    
+                    }
+                }
+                // return redirect('peminjaman')->with('failed', 'Jumlah pembayaran melebihi jumlah pinjaman!');
+            }else{
+                PeminjamanDetail::create([
+                    'peminjaman_id' => $id,
+                    'type_payment' => $request->type_payment,
+                    'total_payment' => $request->total_payment,
+                    'description' => $request->description,
+                    'created_by' => Auth::user()->id,
+                    'updated_by' => Auth::user()->id,
+                ]);
             }
-            PeminjamanDetail::create([
-                'peminjaman_id' => $id,
-                'type_payment' => $request->type_payment,
-                'total_payment' => $request->total_payment,
-                'description' => $request->description,
-                'created_by' => Auth::user()->id,
-                'updated_by' => Auth::user()->id,
-            ]);
+            
             if ($tmpTotal == $data->quantity) {
                 Peminjaman::where('id', $id)->update(['status' => 'paid', 'updated_by' => Auth::user()->id]);
             }
@@ -202,7 +264,6 @@ class PeminjamanController extends Controller
             $old = PeminjamanDetail::where('id', $id)->first();
             $cek = PeminjamanDetail::where('peminjaman_id', $old->peminjaman_id)->sum('total_payment');
             $tmpTotal =  ($cek - $old->total_payment) + $request->total_payment;
-
             $body = [
                 'type_payment' => $request->type_payment,
                 'total_payment' => $request->total_payment,

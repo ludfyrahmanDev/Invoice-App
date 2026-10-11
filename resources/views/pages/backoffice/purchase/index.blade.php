@@ -22,6 +22,35 @@
 
             </div>
             <div class="card-body">
+                <div class="row m-2">
+                    <fieldset>
+                        <legend>Filter</legend>
+                    </fieldset>
+                    <form class="form-horizontal" action="{{ route('purchase.index') }}" method="GET"
+                        enctype="multipart/form-data" data-parsley-validate="">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <label for="">Tanggal Transaksi</label>
+                                    <div class="row no-gutters">
+                                        <div class="col-md-6">
+                                            <input type="date" class="form-control" placeholder="Start Date" value="{{ $start_Date }}" name="start_date">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="date" class="form-control" placeholder="End Date" value="{{ $end_Date }}" name="end_date">
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <button class="btn btn-sm btn-success " style="margin-top: 30px !important;"
+                                    type="submit"><i class="mdi mdi-filter"></i> Filter</button>
+                            
+                            </div>
+                        </div>
+                    </form>
+                </div>
                 <div class="table-responsive">
                     <table class="table text-md-nowrap" id="example1">
                         <thead>
@@ -32,6 +61,7 @@
                                 <th class="wd-15p border-bottom-0">Berat Awal</th>
                                 <th class="wd-15p border-bottom-0">Berat Afkiran</th>
                                 <th class="wd-15p border-bottom-0">Berat Masuk</th>
+                                <th class="wd-15p border-bottom-0">Status</th>
                                 <th class="wd-25p border-bottom-0">Aksi</th>
                             </tr>
                         </thead>
@@ -44,6 +74,13 @@
                                     <td>{{ $item->initial_weight }} KG</td>
                                     <td>{{ $item->reject_weight }} KG</td>
                                     <td>{{ $item->final_weight }} KG</td>
+                                    <td>
+                                        @if ($item->phase == 'draft')
+                                            <span class="badge bg-warning text-white">Draft</span>
+                                        @else
+                                            <span class="badge bg-success text-white">Publish</span>
+                                        @endif
+                                    </td>
                                     <td class="d-flex">
                                         <a href="{{ route('purchase.edit', $item->id)}}" class="btn btn-sm btn-info me-2"> <i class="mdi mdi-pencil"></i>
                                             Ubah</a>

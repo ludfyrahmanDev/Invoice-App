@@ -19,4 +19,8 @@ class PeminjamanDetail extends Model
     {
         return $this->belongsTo(User::class, "updated_by", "id");
     }
+
+    public function peminjaman(){
+        return $this->belongsTo(Peminjaman::class);
+    }
 }

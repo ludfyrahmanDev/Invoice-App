@@ -47,4 +47,13 @@ class Helper{
         $result = (number_format($number, 0, ',', '.'));
         return $result;
     }
+
+    public static function percentage($value, $total)
+    {
+        if ($total == 0) {
+            return '0%';
+        }
+        $result = ($value / $total) * 100;
+        return number_format($result, 2) . '%';
+    }
 }

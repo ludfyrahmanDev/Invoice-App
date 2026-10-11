@@ -40,7 +40,7 @@
             @foreach ($data['data'] as $item)
                 <tr>
                     <td>{{ $item->name }}</td>
-                    <td>{{ $item->qty }} Kg</td>
+                    <td>{{ number_format($item->qty) }} Kg</td>
                 </tr>
             @endforeach
         </tbody>

@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Purchase;
 // import purchase detail
 use App\Models\PurchaseDetail;
-
+use Illuminate\Support\Facades\Artisan;
 /**
  * model block
  */
@@ -24,12 +24,19 @@ class PurchaseController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         //
-        $data = Purchase::with('supplier')->orderBy('created_at', 'desc')->get();
+        $start_Date =  $request->start_date ?? date('Y-m-d', strtotime('first day of january this year'));
+        // get end date last date and month of this year
+        $end_Date =  $request->end_date ?? date('Y-m-d', strtotime('last day of December this year'));
+        $year = date('Y', strtotime($start_Date));
+        $data = Purchase::with('supplier')
+        ->whereDate('created_at', '>=', $start_Date)
+        ->whereDate('created_at', '<=', $end_Date)
+        ->orderBy('created_at', 'desc')->get();
         $title = 'List Data Pembelian';
-        return view('pages.backoffice.purchase.index', compact('data', 'title'));
+        return view('pages.backoffice.purchase.index', compact('data','start_Date', 'end_Date', 'title', 'request'));
     }
 
     /**
@@ -64,6 +71,7 @@ class PurchaseController extends Controller
             'tax'              => '',
             'total'            => '',
             'description'       => '',
+            'phase'            => 'draft',
             'status'            => '',
             'category_id'       => '',
             'purchase_price'    => '',
@@ -76,31 +84,6 @@ class PurchaseController extends Controller
         $parent = Category::with('subcategory')->get();
         // dd($parent->toArray());
         return view('pages.backoffice.purchase.form', compact('categories','title', 'data','suppliers', 'parent'));
-    }
-
-
-    public function print($id)
-    {
-        $data = Purchase::with('supplier', 'purchase_detail','purchase_detail.subcategory','purchase_detail.subcategory.category')->find($id);
-        // group purchase detail with category
-        $detail = [];
-        // $data->purchase_detail = $data->purchase_detail->sortBy('subcategory_id');
-        foreach ($data->purchase_detail as $key => $purchase) {
-            $detail[$purchase->subcategory?->category?->id][] = $purchase;
-        }
-        // sort $detail key asc
-        ksort($detail);
-        // change key to value
-        $detailChange = [];
-        foreach ($detail as $key => $value) {
-            $model = Category::find($key);
-            $detailChange[$model->name] = $value;
-        }
-
-        $data->detail = $detailChange;
-        $title = 'Detail Data Pembelian';
-        $pdf = \PDF::loadView('pages.backoffice.purchase.pdf', compact('data', 'title'));
-        return $pdf->stream('invoice-'.$data->invoice_number.'.pdf');
     }
 
     public function nota($id)
@@ -124,6 +107,29 @@ class PurchaseController extends Controller
         $data->detail = $detailChange;
         $title = 'Detail Data Pembelian';
         $pdf = \PDF::loadView('pages.backoffice.purchase.nota', compact('data', 'title'));
+        return $pdf->stream('invoice-'.$data->invoice_number.'.pdf');
+    }
+    public function print($id)
+    {
+        $data = Purchase::with('supplier', 'purchase_detail','purchase_detail.subcategory','purchase_detail.subcategory.category')->find($id);
+        // group purchase detail with category
+        $detail = [];
+        // $data->purchase_detail = $data->purchase_detail->sortBy('subcategory_id');
+        foreach ($data->purchase_detail as $key => $purchase) {
+            $detail[$purchase->subcategory?->category?->id][] = $purchase;
+        }
+        // sort $detail key asc
+        ksort($detail);
+        // change key to value
+        $detailChange = [];
+        foreach ($detail as $key => $value) {
+            $model = Category::find($key);
+            $detailChange[$model->name] = $value;
+        }
+
+        $data->detail = $detailChange;
+        $title = 'Detail Data Pembelian';
+        $pdf = \PDF::loadView('pages.backoffice.purchase.pdf', compact('data', 'title'));
         return $pdf->stream('invoice-'.$data->invoice_number.'.pdf');
     }
 
@@ -166,19 +172,50 @@ class PurchaseController extends Controller
         return view('pages.backoffice.purchase.report', compact('data', 'head_supplier','title', 'suppliers','reject_weight_presentase', 'supplier_id', 'request', 'category'));
     }
 
+    public function backup(Request $request){
+       try {
+            // backup table category
+            $tables = ['categories', 'sub_categories', 'suppliers', 'purchases', 'purchase_details'];
+            $fileName = 'backup-'.date('Y-m-d-H-i-s').'.sql';
+            $path = storage_path('app/public/backup/'.$fileName);
+            $tables = implode(' ', $tables);
+
+            // run artisan command to backup database
+            Artisan::call('db:backup', [
+                '--tables' => $tables,
+                '--destination' => 'local',
+                '--destinationPath' => 'backup/'.$fileName,
+                '--compression' => 'gzip',
+            ]);
+            // download file
+            return response()->download($path)->deleteFileAfterSend(true);
+
+       } catch (\Throwable $th) {
+            //throw $th;
+            return back()->with('failed', 'Gagal backup database!'.$th->getMessage());
+       }
+    }
 
     public function allPrint(Request $request){
         $request->start_date = str_replace('/', '-', $request->start_date);
         $request['start_date'] = str_replace('/', '-', $request->start_date);
         $request->end_date = str_replace('/', '-', $request->end_date);
         $request['end_date'] = str_replace('/', '-', $request->end_date);
+        if($request->start_date == "" || $request->end_date == ""){
+            $start_date = date('Y-m-d');
+            $end_date = date('Y-m-d');
+            $request->merge([
+                'start_date' => $start_date,
+                'end_date' => $end_date
+            ]);
+        }
         $title = 'Laporan Pembelian';
         $view = 'pages.backoffice.purchase.allpdf';
         $data = [];
         $supplier = null;
         if($request->report_type == 'mutu'){
             $view = 'pages.backoffice.purchase.category';
-            $category = Category::with('subcategory', 'subcategory.purchaseDetails','subcategory.purchaseDetails.purchase');
+            $category = Category::with('subcategory', 'subcategory.purchaseDetails','subcategory.purchaseDetails.purchase')->orderBy('id', 'asc');
             $list = (object)[];
             $qty = 0;
             if($request->category_id){
@@ -196,7 +233,7 @@ class PurchaseController extends Controller
                         return $item;
                     });
                 }
-
+               
                 $list = $category->subcategory;
             }else{
                 // filter by start date and end date
@@ -209,7 +246,7 @@ class PurchaseController extends Controller
                             $query->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to);
                         });
                     });
-
+                    
                 }
                 $category = $category->get();
                 $list = [];
@@ -235,9 +272,7 @@ class PurchaseController extends Controller
             $supplier = Supplier::find($supplier_id);
             $view = 'pages.backoffice.purchase.rincian';
             $category = Purchase::with('supplier', 'purchase_detail','purchase_detail.subcategory','purchase_detail.subcategory.category');
-            if($request->start_date && $request->end_date){
-                $category->whereDate('invoice_date', '>=', $request->start_date)->whereDate('invoice_date', '<=', $request->end_date);
-            }
+            
             if($supplier_id){
                 $category->where('supplier_id', $supplier_id);
             }
@@ -247,6 +282,9 @@ class PurchaseController extends Controller
                     $query->where('parent_id', $head_supplier_id);
                 })
                 ->orWhere('supplier_id', $head_supplier_id);
+            }
+            if($request->start_date && $request->end_date){
+                $category->whereDate('invoice_date', '>=', $request->start_date)->whereDate('invoice_date', '<=', $request->end_date);
             }
             $category = $category->get();
             $list = [];
@@ -267,6 +305,7 @@ class PurchaseController extends Controller
                                 'price' => $purchase->price,
                                 'invoice_number' => $item->invoice_number,
                                 'subtotal' => $purchase->subtotal,
+                                'invoice_date' => $item->invoice_date,
                             ];
                         }
                     }
@@ -300,9 +339,9 @@ class PurchaseController extends Controller
             if($head_supplier_id){
                 $supplier = Supplier::find($head_supplier_id);
                 $category->whereHas('supplier', function($query) use ($head_supplier_id){
-                    $query->where('parent_id', $head_supplier_id);
-                })
-                ->orWhere('supplier_id', $head_supplier_id);
+                    $query->orWhere('parent_id', $head_supplier_id);
+                });
+                $category->Where('supplier_id', $head_supplier_id);
             }
             $category = $category->get();
             $list = [];
@@ -329,7 +368,7 @@ class PurchaseController extends Controller
                     array_filter($list);
 
                 }
-
+                
                 // $list[] = $detail;
             }
             ksort($list);
@@ -343,7 +382,7 @@ class PurchaseController extends Controller
                 'qty' => array_sum(array_column($list, 'qty')) == 0 ? 1 : array_sum(array_column($list, 'qty')),
                 'subtotal' => array_sum(array_column($list, 'subtotal')),
             ];
-
+            
         }
         $date = date('Ymd');
         $pdf = \PDF::loadView($view, compact('data', 'title', 'supplier', 'request'));
@@ -395,6 +434,7 @@ class PurchaseController extends Controller
                 'description' => $request->description ?? '-',
                 'status' => 'paid',
                 'user_id' => auth()->user()->id,
+                'phase' => $request->phase ?? 'draft',
                 'created_at' => date('Y-m-d H:i:s', strtotime($request->invoice_date)),
             ]);
             $purchase = Purchase::create($data);
@@ -477,6 +517,13 @@ class PurchaseController extends Controller
         $title = 'Edit Data Pembelian';
         $data->type = 'edit';
         $parent = Category::with('subcategory')->get();
+        if($data->phase == 'draft'){
+            // price in purchase detail get from subcategory purchase price
+            foreach ($data->purchase_detail as $key => $value) {
+                $value->price = $value->subcategory->purchase_price;
+                $value->subtotal = $value->price * $value->qty;
+            }
+        }
         return view('pages.backoffice.purchase.form', compact('data', 'title','suppliers', 'categories','parent'));
     }
 
@@ -521,6 +568,7 @@ class PurchaseController extends Controller
                 'subtotal' => array_sum($request->subtotal),
                 'tax' => $request->tax ?? 0,
                 'total' => $total,
+                'phase' => $request->phase ?? 'publish',
                 'description' => $request->description ?? '-',
                 'status' => 'paid',
                 'user_id' => auth()->user()->id,
@@ -540,7 +588,7 @@ class PurchaseController extends Controller
                 PurchaseDetail::create($data_detail);
             }
             DB::commit();
-            return redirect('purchase')->with('success', 'Berhasil mengubah data!');
+            return redirect('purchase/'.$id)->with('success', 'Berhasil mengubah data!');
         } catch (\Throwable $th) {
             return back()->with('failed', 'Gagal mengubah data!'.$th->getMessage());
         }

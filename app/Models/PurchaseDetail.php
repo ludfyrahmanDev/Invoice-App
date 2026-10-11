@@ -21,7 +21,6 @@ class PurchaseDetail extends Model
     {
         return $this->belongsTo(SubCategory::class, 'subcategory_id', 'id');
     }
-
     public function purchase()
     {
         return $this->belongsTo(Purchase::class, 'purchase_id', 'id');

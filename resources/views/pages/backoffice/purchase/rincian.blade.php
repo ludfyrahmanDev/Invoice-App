@@ -54,7 +54,7 @@
 <body>
     @include('pages.backoffice.purchase.header')
     <div class="col-md-6">
-        <h3>Lap Pembelian: {{ $request->supplier_id ? $supplier->name_alias : ($request->head_supplier_id ? 'Laporan Belandang:'.$supplier->name_alias: 'Seluruh Belandang') }}</h3>
+        <h3>Lap Pembelian: {{ $request->supplier_id ? $supplier->name_alias : ($request->head_supplier_id ? 'Laporan Belandang:'.$supplier->name_alias: 'Rincian Pembelian Belandang') }}</h3>
     </div>
     <div class="col-md-6 text-end right" style="margin-top:-70px">
         <h5>Tanggal: {{ date('d-M-Y') }}</h5>
@@ -67,8 +67,9 @@
     <table>
         <thead>
             <tr>
-                <th>Jenis</th>
+                <th>Nama</th>
                 <th>No Nota</th>
+                <th>Tanggal Nota</th>
                 <th>Berat</th>
                 <th>Subtotal</th>
             </tr>
@@ -88,6 +89,7 @@
                     <td class="text-right">
                         {{ $item->invoice_number }}
                     </td>
+                    <td class="text-center">{{ $item->invoice_date }}</td>
                     <td class="text-center">{{ $item->qty }} Kg</td>
                     <td class="text-right">{{ Helper::price($item->subtotal) }}</td>
 
@@ -96,8 +98,8 @@
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="2" class="text-end">Total</td>
-                <td class="text-right">{{ number_format($weight) }}Kg</td>
+                <td colspan="3" class="text-end">Total</td>
+                <td class="text-center">{{ number_format($weight) }}Kg</td>
                 <td class="text-right">{{ Helper::price($total) }}</td>
             </tr>
 

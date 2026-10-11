@@ -50,9 +50,9 @@
                                     <label for="">Alias </label>
                                     <input type="text" {{$data->type == 'detail' ? 'disabled' :''}} id="alias" name="alias"
                                         class="form-control @error('alias') parsley-error @enderror" placeholder="alias"
-                                        value="{{ $data->alias == '' ? old('alias') : $data->alias }}">
+                                        value="{{ $data->alias == '' ? old('alias') : ($data->alias ?? $data->name) }}">
                                     @error('alias')
-                                        <ul class="parsley-errors-list filled" id="parsley-id-5">
+                                        <ul class="parsley-errors-list filled" id=                                        "parsley-id-5">
                                             <li class="parsley-required">{{ $message }}</li>
                                         </ul>
                                     @enderror

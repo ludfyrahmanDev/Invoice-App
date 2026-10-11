@@ -69,7 +69,7 @@
             <tr>
                 <th>Jenis</th>
                 <th>Berat</th>
-                <th>Harga</th>
+                <!-- <th>Harga</th> -->
                 <th>Subtotal</th>
             </tr>
         </thead>
@@ -78,7 +78,7 @@
                 <tr>
                     <td class="text-center">{{ $item->name }}</td>
                     <td class="text-center">{{ $item->qty }} Kg</td>
-                    <td class="text-right">{{ Helper::price($item->price) }}</td>
+                    <!-- <td class="text-right">{{ Helper::price($item->price) }}</td> -->
                     <td class="text-right">{{ Helper::price($item->subtotal) }}</td>
                 </tr>
             @endforeach
@@ -86,8 +86,8 @@
         <tfoot>
             <tr>
                 <td class="text-center">Total</td>
-                <td class="text-center">{{ $data['qty'] }} Kg</td>
-                <td class="text-right">{{ Helper::price($data['subtotal'] / $data['qty']) }}</td>
+                <td class="text-center">{{ $data['qty'] == 1 ? '0' : $data['qty']}} Kg</td>
+                <!-- <td class="text-right">{{ Helper::price($data['subtotal'] / $data['qty']) }}</td> -->
                 <td class="text-right">{{ Helper::price($data['subtotal']) }}</td>
             </tr>
         </tfoot>

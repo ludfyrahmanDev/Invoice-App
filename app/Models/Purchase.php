@@ -23,6 +23,7 @@ class Purchase extends Model
         'total',
         'description',
         'status',
+        'phase',
         'user_id',
         'created_at',
     ];

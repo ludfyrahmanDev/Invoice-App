@@ -61,7 +61,7 @@
                                     <tr>
                                         <th>#</th>
                                         <th>Sub Kategori</th>
-                                        <th>Deskripsi</th>
+                                        <th>Harga Beli</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -69,7 +69,7 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $item->name }}</td>
-                                            <td>{{ $item->description }}</td>
+                                            <td>{{ Helper::price($item->purchase_price) }}</td>
                                         </tr>
                                     <tr>
                                     @endforeach
